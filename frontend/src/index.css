@@ -273,17 +273,41 @@
   }
 }
 
+/* Mobile fade animation (less intensive) */
+@keyframes mobileFade {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .page-flip-container {
   transition: transform 0.6s ease-in-out;
   transform-style: preserve-3d;
 }
 
-.page-flip.flip-next {
-  animation: pageFlipNext 0.6s ease-in-out;
+/* Desktop page flip */
+@media (min-width: 768px) {
+  .page-flip.flip-next {
+    animation: pageFlipNext 0.6s ease-in-out;
+  }
+
+  .page-flip.flip-prev {
+    animation: pageFlipPrev 0.6s ease-in-out;
+  }
 }
 
-.page-flip.flip-prev {
-  animation: pageFlipPrev 0.6s ease-in-out;
+/* Mobile fade (lighter animation for performance) */
+@media (max-width: 767px) {
+  .page-flip.flip-next,
+  .page-flip.flip-prev {
+    animation: mobileFade 0.4s ease-in-out;
+  }
 }
 
 /* Utility Classes */
