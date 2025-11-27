@@ -109,8 +109,8 @@
 
 ```bash
 # 1️⃣ Clone the repository
-git clone https://github.com/HardikBhaskar2010/Cooked.git
-cd Cooked
+git clone https://github.com/HardikBhaskar2010/Perfection-v5.git
+cd Perfection-v5
 
 # 2️⃣ Install dependencies
 npm install
