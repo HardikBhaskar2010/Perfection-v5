@@ -8,10 +8,12 @@ import { AnimationProvider } from "@/contexts/AnimationContext";
 import { PreferencesProvider } from "@/contexts/PreferencesContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { TutorialProvider } from "@/contexts/TutorialContext";
+import { PerfProvider } from "@/contexts/PerfContext";
 import { PageLoading } from "@/components/ui/loading";
 import ErrorBoundary from "@/components/ui/error-boundary";
 import { preloadAnimations } from "@/lib/animation";
 import WelcomeTour from "@/components/tutorial/WelcomeTour";
+import { PerfPromptBanner } from "@/components/ui/perf-prompt-banner";
 
 // Lazy load page components
 const Home = React.lazy(() => import("./pages/Home"));
@@ -40,35 +42,38 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <PreferencesProvider>
-          <AnimationProvider>
-            <TutorialProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <BrowserRouter>
-                  <Suspense fallback={<PageLoading />}>
-                    <Routes>
-                      <Route path="/" element={<Home />} />
-                      <Route path="/login" element={<Login />} />
-                      <Route path="/signup" element={<SignUp />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
-                      <Route path="/project/:id" element={<ProjectDetail />} />
-                      <Route path="/generator" element={<Generator />} />
-                      <Route path="/components" element={<Components />} />
-                      <Route path="/components/compare" element={<ComponentComparison />} />
-                      <Route path="/library" element={<Library />} />
-                      <Route path="/learn" element={<Learn />} />
-                      <Route path="/profile" element={<Profile />} />
-                      <Route path="/about" element={<About />} />
-                      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </Suspense>
-                  <WelcomeTour />
-                </BrowserRouter>
-              </TooltipProvider>
-            </TutorialProvider>
-          </AnimationProvider>
+          <PerfProvider>
+            <AnimationProvider>
+              <TutorialProvider>
+                <TooltipProvider>
+                  <Toaster />
+                  <Sonner />
+                  <BrowserRouter>
+                    <PerfPromptBanner />
+                    <Suspense fallback={<PageLoading />}>
+                      <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/signup" element={<SignUp />} />
+                        <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/project/:id" element={<ProjectDetail />} />
+                        <Route path="/generator" element={<Generator />} />
+                        <Route path="/components" element={<Components />} />
+                        <Route path="/components/compare" element={<ComponentComparison />} />
+                        <Route path="/library" element={<Library />} />
+                        <Route path="/learn" element={<Learn />} />
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/about" element={<About />} />
+                        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </Suspense>
+                    <WelcomeTour />
+                  </BrowserRouter>
+                </TooltipProvider>
+              </TutorialProvider>
+            </AnimationProvider>
+          </PerfProvider>
         </PreferencesProvider>
       </AuthProvider>
     </QueryClientProvider>

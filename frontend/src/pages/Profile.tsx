@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, Calendar, Settings, LogOut, Save, Camera, Eye, EyeOff, School, Palette, Check } from 'lucide-react';
+import { User, Mail, Calendar, Settings, LogOut, Save, Camera, Eye, EyeOff, School, Palette, Check, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,8 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Layout from '@/components/layout/Layout';
 import { toast } from '@/hooks/use-toast';
 import { Switch } from '@/components/ui/switch';
-import { usePreferences, COLOR_THEMES, type ColorTheme } from '@/contexts/PreferencesContext';
+import { usePreferences, COLOR_THEMES, ColorTheme } from '@/contexts/PreferencesContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePerf } from '@/contexts/PerfContext';
 import {
   Dialog,
   DialogContent,
@@ -46,6 +47,7 @@ const Profile: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const { userMode, setUserMode, colorTheme, setColorTheme } = usePreferences();
   const { user } = useAuth();
+  const { lowPerf, setLowPerf, suggested } = usePerf();
   const [projects, setProjects] = useState<Project[]>([]);
   const [colorDialogOpen, setColorDialogOpen] = useState(false);
   
@@ -368,6 +370,45 @@ const Profile: React.FC = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* Low Performance Mode toggle */}
+                <div className="flex items-start justify-between gap-6 p-4 rounded-lg border">
+                  <div className="flex-1">
+                    <div className="font-medium flex items-center gap-2">
+                      Low Performance Mode
+                      {suggested && (
+                        <Badge variant="outline" className="text-yellow-500 border-yellow-500/50 text-xs">
+                          Recommended
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      Disables heavy visuals and animations to improve performance on slower devices.
+                    </div>
+                    {lowPerf && (
+                      <div className="mt-2 flex items-center gap-1 text-xs text-yellow-400">
+                        <Zap className="w-3 h-3" />
+                        <span>Optimized mode active</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <Switch
+                      checked={lowPerf}
+                      onCheckedChange={(val) => {
+                        setLowPerf(val);
+                        toast({
+                          title: val ? "Low Performance Mode Enabled" : "Low Performance Mode Disabled",
+                          description: val 
+                            ? "Animations and effects have been reduced for better performance." 
+                            : "Full animations and effects restored.",
+                        });
+                      }}
+                      aria-label="Toggle Low Performance Mode"
+                      data-testid="low-perf-toggle"
+                    />
+                  </div>
+                </div>
+
                 {/* Price visibility toggle */}
                 <div className="flex items-start justify-between gap-6 p-4 rounded-lg border">
                   <div>
