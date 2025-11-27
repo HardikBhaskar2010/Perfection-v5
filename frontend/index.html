@@ -3,11 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>STEM Project Generator</title>
-    <meta name="description" content="AI-powered STEM project generator with component database and project library" />
-    <meta name="author" content="STEM Generator Team" />
     
-    <!-- Favicon -->
+    <title>STEM Project Generator</title>
+    <meta name="description" content="AI-powered STEM project generator with component database and project library." />
+    <meta name="author" content="STEM Generator Team" />
+
+    <!-- Favicon Setup -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
@@ -16,16 +17,35 @@
     <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
+    <!-- Open Graph (for Discord, FB, etc.) -->
     <meta property="og:title" content="STEM Project Generator" />
-    <meta property="og:description" content="Transform your ideas into reality with AI-powered project suggestions" />
+    <meta
+      property="og:description"
+      content="Turn your ideas into real STEM builds with AI-powered project suggestions."
+    />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="/opengraph.png" />
+    <meta property="og:image" content="https://wallpapercave.com/wp/wp8441929.png" />
+    <meta property="og:image:width" content="1920" />
+    <meta property="og:image:height" content="1080" />
 
+    <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="/opengraph.png" />
+    <meta name="twitter:title" content="STEM Project Generator" />
+    <meta
+      name="twitter:description"
+      content="Turn your ideas into real STEM builds with AI-powered project suggestions."
+    />
+    <meta name="twitter:image" content="https://wallpapercave.com/wp/wp8441929.png" />
+
+    <!-- Theme colors for mobile -->
+    <meta name="theme-color" content="#0d1117" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!-- Extra polish -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   </head>
 
-  <body>
+  <body style="margin: 0; background: #0d1117; color: #fff; font-family: Arial, sans-serif;">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
