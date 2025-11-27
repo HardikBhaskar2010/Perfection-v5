@@ -29,10 +29,10 @@ const NoteCard: React.FC<NoteCardProps> = ({ content, type = 'info' }) => {
   const { icon: Icon, className, iconColor } = config[type];
 
   return (
-    <Card className={`p-4 ${className} border backdrop-blur`}>
-      <div className="flex gap-3">
-        <Icon className={`w-5 h-5 ${iconColor} flex-shrink-0 mt-0.5`} />
-        <p className="text-sm text-foreground/90 leading-relaxed">
+    <Card className={`p-3 md:p-4 ${className} border backdrop-blur`}>
+      <div className="flex gap-2 md:gap-3">
+        <Icon className={`w-4 h-4 md:w-5 md:h-5 ${iconColor} flex-shrink-0 mt-0.5`} />
+        <p className="text-xs md:text-sm text-foreground/90 leading-relaxed">
           {content}
         </p>
       </div>
