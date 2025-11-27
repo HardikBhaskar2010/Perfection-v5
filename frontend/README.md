@@ -52,6 +52,10 @@
     <td><b>User Profiles</b><br/>Track achievements, skills, and your maker journey</td>
   </tr>
   <tr>
+    <td align="center">📖</td>
+    <td><b>Interactive Learning Hub</b><br/>Digital book experience with Software & Hardware fundamentals</td>
+  </tr>
+  <tr>
     <td align="center">🎨</td>
     <td><b>Beautiful UI</b><br/>Black & purple theme with smooth animations and glassmorphic effects</td>
   </tr>
@@ -182,6 +186,7 @@ npx cap run ios
 │   │   ├── 📄 Generator.tsx   # 🤖 AI project generator
 │   │   ├── 📄 Components.tsx  # 🔧 Component database
 │   │   ├── 📄 Library.tsx     # 📚 Project library
+│   │   ├── 📄 Learn.tsx       # 📖 Interactive learning hub
 │   │   └── 📄 Profile.tsx     # 👤 User profile
 │   ├── 📁 hooks/              # 🪝 Custom React hooks
 │   ├── 📁 lib/                # 🛠️ Utility functions
@@ -242,6 +247,16 @@ Generate personalized STEM projects based on:
 - ⭐ Star favorite projects
 - 🏷️ Organize with tags
 - 📊 Progress visualization
+
+### 📖 Interactive Learning Hub
+- 📚 **Digital Book Experience**: Page-flipping animations like a real book
+- 💻 **Software Fundamentals**: 10 chapters covering programming, Arduino, IoT, and more
+- 🔧 **Hardware Fundamentals**: 10 chapters on electronics, sensors, circuits, and components
+- 🎴 **Special Note Cards**: Highlighted tips, warnings, and important information
+- 💡 **Code Examples**: Syntax-highlighted code blocks with copy functionality
+- 🔍 **Smart Search**: Find specific topics and chapters instantly
+- 📍 **Chapter Navigation**: Sidebar with quick chapter access
+- 🎯 **Progress Tracking**: Track your learning journey through chapters
 
 ### 👤 User Profile
 - 🏆 Achievement system
