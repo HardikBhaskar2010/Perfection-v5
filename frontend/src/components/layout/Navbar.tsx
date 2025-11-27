@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Zap, Cpu, BookOpen, User, Home, Info } from 'lucide-react';
+import { Menu, X, Zap, Cpu, BookOpen, User, Home, Info, GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useHoverAnimation } from '@/hooks/useHoverAnimation';
 import { useMicroInteraction } from '@/hooks/useMicroInteraction';
@@ -33,6 +33,7 @@ const Navbar: React.FC = () => {
     { path: '/generator', label: 'Generator', icon: Zap },
     { path: '/components', label: 'Components', icon: Cpu },
     { path: '/library', label: 'Library', icon: BookOpen },
+    { path: '/learn', label: 'Learn', icon: GraduationCap },
     { path: '/about', label: 'About', icon: Info },
     { path: '/profile', label: 'Profile', icon: User },
   ];
