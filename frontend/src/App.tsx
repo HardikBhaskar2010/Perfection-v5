@@ -48,8 +48,13 @@ const App = () => (
             <AnimationProvider>
               <TutorialProvider>
                 <TooltipProvider>
+                  {/* 🔥 Vercel magic */}
+                  <SpeedInsights />
+                  <Analytics />
+
                   <Toaster />
                   <Sonner />
+
                   <BrowserRouter>
                     <PerfPromptBanner />
                     <Suspense fallback={<PageLoading />}>
@@ -66,7 +71,6 @@ const App = () => (
                         <Route path="/learn" element={<Learn />} />
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/about" element={<About />} />
-                        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </Suspense>
@@ -81,5 +85,6 @@ const App = () => (
     </QueryClientProvider>
   </ErrorBoundary>
 );
+
 
 export default App;
