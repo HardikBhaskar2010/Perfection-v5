@@ -27,7 +27,6 @@ const Profile = React.lazy(() => import("./pages/Profile"));
 const About = React.lazy(() => import("./pages/About"));
 const Login = React.lazy(() => import("./pages/Login"));
 const SignUp = React.lazy(() => import("./pages/SignUp"));
-const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const ProjectDetail = React.lazy(() => import("./pages/ProjectDetail"));
 const ComponentComparison = React.lazy(() => import("./pages/ComponentComparison"));
 const AuthCallback = React.lazy(() => import("./pages/AuthCallback"));
