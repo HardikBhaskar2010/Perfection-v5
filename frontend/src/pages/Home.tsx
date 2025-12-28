@@ -1,41 +1,119 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Zap, Cpu, BookOpen, ArrowRight, Sparkles, Rocket, Brain } from 'lucide-react';
+import { Zap, Cpu, BookOpen, ArrowRight, Sparkles, Rocket, Brain, LogOut, TrendingUp, Plus, Eye, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import Layout from '@/components/layout/Layout';
+import PageHeader from '@/components/layout/PageHeader';
 import { useTutorial } from '@/contexts/TutorialContext';
 import { useAuth } from '@/contexts/AuthContext';
+import { authService } from '@/services/authService';
+import { projectService, type SavedProject } from '@/services/projectService';
+import { toast } from '@/hooks/use-toast';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
-  const { mode, isLoading } = useAuth();
+  const { user, mode, isLoading: authLoading, isGuest } = useAuth();
   const { tutorialState, startWelcomeTour } = useTutorial();
 
-  // Animation refs for hero section
+  // Dashboard state
+  const [projects, setProjects] = useState<SavedProject[]>([]);
+  const [isLoadingProjects, setIsLoadingProjects] = useState(true);
+  const [activeTab, setActiveTab] = useState('all');
+  const [stats, setStats] = useState({ total: 0, completed: 0, inProgress: 0, planning: 0 });
+
+  // Animation refs for hero section (Landing view)
   const heroIconRef = useScrollAnimation<HTMLDivElement>({ animation: 'fadeIn', delay: 0 });
   const heroTitleRef = useScrollAnimation<HTMLHeadingElement>({ animation: 'fadeIn', delay: 200 });
   const heroDescRef = useScrollAnimation<HTMLParagraphElement>({ animation: 'fadeIn', delay: 400 });
   const heroButtonsRef = useScrollAnimation<HTMLDivElement>({ animation: 'fadeIn', delay: 600 });
 
-  // Redirect authenticated users (including guests) to Dashboard
-  useEffect(() => {
-    if (!isLoading && (mode === 'authenticated' || mode === 'guest')) {
-      navigate('/dashboard');
-    }
-  }, [isLoading, mode, navigate]);
+  // Determine which view to show
+  const showDashboard = mode === 'authenticated';
+  const showLanding = mode === 'unauthenticated' || mode === 'guest';
 
-  // Start welcome tour on first visit
+  // Load projects for dashboard view
   useEffect(() => {
-    if (!tutorialState.hasSeenWelcome) {
-      // Delay to ensure page is fully loaded
+    if (showDashboard) {
+      loadProjects();
+    }
+  }, [showDashboard]);
+
+  // Start welcome tour on first visit (Landing view only)
+  useEffect(() => {
+    if (showLanding && !tutorialState.hasSeenWelcome) {
       const timer = setTimeout(() => {
         startWelcomeTour();
       }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [tutorialState.hasSeenWelcome, startWelcomeTour]);
+  }, [showLanding, tutorialState.hasSeenWelcome, startWelcomeTour]);
+
+  const loadProjects = async () => {
+    setIsLoadingProjects(true);
+    const userProjects = await projectService.getProjects();
+    setProjects(userProjects);
+
+    const projectStats = await projectService.getProjectStats();
+    if (projectStats) {
+      setStats(projectStats);
+    }
+    setIsLoadingProjects(false);
+  };
+
+  const handleLogout = async () => {
+    const { error } = await authService.signOut();
+    if (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to sign out',
+        variant: 'destructive',
+      });
+      return;
+    }
+    // Stay on home page after logout
+  };
+
+  const handleDeleteProject = async (id: string) => {
+    const success = await projectService.deleteProject(id);
+    if (success) {
+      toast({
+        title: 'Project deleted',
+        description: 'The project has been removed',
+      });
+      await loadProjects();
+    } else {
+      toast({
+        title: 'Error',
+        description: 'Failed to delete project',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const filteredProjects = projects.filter(project => {
+    if (activeTab === 'all') return true;
+    if (activeTab === 'completed') return project.status === 'completed';
+    if (activeTab === 'in-progress') return project.status === 'in-progress';
+    if (activeTab === 'planning') return project.status === 'planning';
+    return true;
+  });
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return 'bg-green-500/10 text-green-500';
+      case 'in-progress':
+        return 'bg-blue-500/10 text-blue-500';
+      case 'planning':
+        return 'bg-orange-500/10 text-orange-500';
+      default:
+        return 'bg-gray-500/10 text-gray-500';
+    }
+  };
 
   const features = [
     {
