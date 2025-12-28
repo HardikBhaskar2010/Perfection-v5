@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabase';
 import type { AuthError, User } from '@supabase/supabase-js';
 import { guestService, type GuestUser } from './guestService';
+import type { AuthProvider } from '@/contexts/AuthContext';
 
 export interface SignUpData {
   email: string;
@@ -20,6 +21,20 @@ export interface AuthResponse {
 }
 
 class AuthService {
+  // Event emitter for guest login (since Supabase doesn't emit for guests)
+  private guestLoginCallbacks: Array<(user: GuestUser) => void> = [];
+
+  onGuestLogin(callback: (user: GuestUser) => void) {
+    this.guestLoginCallbacks.push(callback);
+    return () => {
+      this.guestLoginCallbacks = this.guestLoginCallbacks.filter(cb => cb !== callback);
+    };
+  }
+
+  private emitGuestLogin(user: GuestUser) {
+    this.guestLoginCallbacks.forEach(callback => callback(user));
+  }
+
   async signUp(data: SignUpData): Promise<AuthResponse> {
     try {
       const { data: authData, error } = await supabase.auth.signUp({
@@ -77,13 +92,13 @@ class AuthService {
     }
   }
 
-  // Sign in with Google OAuth
+  // Sign in with Google OAuth - STEP 2: Fixed redirect URL
   async signInWithGoogle(): Promise<{ error: AuthError | null }> {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       });
       return { error };
@@ -93,10 +108,15 @@ class AuthService {
     }
   }
 
-  // Continue as Guest
+  // Continue as Guest - STEP 1: Enhanced guest login
   async continueAsGuest(): Promise<AuthResponse> {
     try {
       const guestUser = guestService.getOrCreateGuest();
+      console.log('✅ Guest user created:', guestUser.id);
+      
+      // Emit guest login event to update AuthContext
+      this.emitGuestLogin(guestUser);
+      
       return { 
         user: guestUser, 
         error: null, 
@@ -116,6 +136,7 @@ class AuthService {
       // Check if guest user
       if (guestService.isGuest()) {
         guestService.clearGuestData();
+        console.log('✅ Guest session cleared');
         return { error: null };
       }
 
@@ -124,6 +145,7 @@ class AuthService {
       
       // Clear any local storage
       localStorage.removeItem('user_projects');
+      console.log('✅ User signed out');
       
       return { error };
     } catch (error) {
@@ -164,7 +186,7 @@ class AuthService {
     }
   }
 
-  // Upgrade guest to real account (migrate data)
+  // Upgrade guest to real account (migrate data) - STEP 5
   async upgradeGuestToAccount(data: SignUpData): Promise<AuthResponse> {
     try {
       // Get guest data before clearing
@@ -180,6 +202,7 @@ class AuthService {
 
         // Clear guest data
         guestService.clearGuestData();
+        console.log('✅ Guest upgraded to real account');
       }
 
       return result;
@@ -192,15 +215,23 @@ class AuthService {
     }
   }
 
-  onAuthStateChange(callback: (user: User | GuestUser | null) => void) {
-    // Check for guest on mount
-    if (guestService.isGuest()) {
-      callback(guestService.getGuest());
-    }
-
-    // Listen for real auth changes
+  // Enhanced auth state change listener with provider tracking
+  onAuthStateChange(callback: (user: User | GuestUser | null, provider?: AuthProvider) => void) {
+    // Listen for real auth changes only (Supabase)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      callback(session?.user || null);
+      if (session?.user) {
+        // Determine provider from user metadata
+        const provider = session.user.app_metadata?.provider === 'google' ? 'google' : 'email';
+        callback(session.user, provider as AuthProvider);
+        
+        // Clear guest session when real user logs in
+        if (guestService.isGuest()) {
+          guestService.clearGuestData();
+          console.log('✅ Guest session cleared after real login');
+        }
+      } else {
+        callback(null, null);
+      }
     });
 
     return subscription;

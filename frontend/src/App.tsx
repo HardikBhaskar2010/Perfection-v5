@@ -30,6 +30,7 @@ const SignUp = React.lazy(() => import("./pages/SignUp"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const ProjectDetail = React.lazy(() => import("./pages/ProjectDetail"));
 const ComponentComparison = React.lazy(() => import("./pages/ComponentComparison"));
+const AuthCallback = React.lazy(() => import("./pages/AuthCallback"));
 const NotFound = React.lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -63,6 +64,7 @@ const App = () => (
                         <Route path="/home" element={<Home />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<SignUp />} />
+                        <Route path="/auth/callback" element={<AuthCallback />} />
                         <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/project/:id" element={<ProjectDetail />} />
                         <Route path="/generator" element={<Generator />} />

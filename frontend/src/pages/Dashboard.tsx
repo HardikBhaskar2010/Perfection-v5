@@ -14,20 +14,25 @@ import { toast } from '@/hooks/use-toast';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading, mode, isGuest } = useAuth();
   const [projects, setProjects] = useState<SavedProject[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
   const [stats, setStats] = useState({ total: 0, completed: 0, inProgress: 0, planning: 0 });
 
+  // STEP 3: Allow both guest and authenticated users
   useEffect(() => {
-    if (!authLoading && !user) {
+    // Only redirect if truly unauthenticated (not guest)
+    if (!authLoading && mode === 'unauthenticated') {
       navigate('/login');
       return;
     }
 
-    loadProjects();
-  }, [authLoading, user, navigate]);
+    // Load projects for both guests and authenticated users
+    if (mode === 'guest' || mode === 'authenticated') {
+      loadProjects();
+    }
+  }, [authLoading, mode, navigate]);
 
   const loadProjects = async () => {
     setIsLoading(true);
@@ -121,16 +126,36 @@ const Dashboard: React.FC = () => {
         {/* Header with logout */}
         <div className="max-w-6xl mx-auto mb-8 flex justify-between items-center">
           <div>
-            <p className="text-muted-foreground">Welcome, {user?.email}</p>
+            {isGuest ? (
+              <div>
+                <p className="text-muted-foreground">Welcome, Guest!</p>
+                <p className="text-xs text-muted-foreground">
+                  Create an account to save your progress permanently
+                </p>
+              </div>
+            ) : (
+              <p className="text-muted-foreground">Welcome, {user?.email}</p>
+            )}
           </div>
-          <Button
-            variant="outline"
-            onClick={handleLogout}
-            className="gap-2"
-          >
-            <LogOut className="w-4 h-4" />
-            Sign Out
-          </Button>
+          <div className="flex gap-2">
+            {isGuest && (
+              <Button
+                variant="default"
+                onClick={() => navigate('/signup')}
+                className="bg-gradient-primary text-white"
+              >
+                Create Account
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              {isGuest ? 'Exit Guest Mode' : 'Sign Out'}
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
