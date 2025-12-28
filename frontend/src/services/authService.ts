@@ -93,20 +93,23 @@ class AuthService {
   }
 
   // Sign in with Google OAuth - STEP 2: Fixed redirect URL
-  async signInWithGoogle(): Promise<{ error: AuthError | null }> {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-      return { error };
-    } catch (error) {
-      console.error('Google sign in error:', error);
-      return { error: error as AuthError };
-    }
+// Sign in with Google OAuth (FIXED)
+async signInWithGoogle(): Promise<{ error: AuthError | null }> {
+  try {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin,
+      },
+    });
+
+    return { error };
+  } catch (err) {
+    console.error('Google sign in error:', err);
+    return { error: err as AuthError };
   }
+}
+}
 
   // Continue as Guest - STEP 1: Enhanced guest login
   async continueAsGuest(): Promise<AuthResponse> {
