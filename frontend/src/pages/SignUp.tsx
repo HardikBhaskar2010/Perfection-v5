@@ -22,10 +22,10 @@ const SignUp: React.FC = () => {
     confirmPassword: '',
   });
 
-  // Redirect authenticated users (including guests) to Dashboard
+  // Redirect authenticated users (including guests) to Home
   useEffect(() => {
     if (!authLoading && (mode === 'authenticated' || mode === 'guest')) {
-      navigate('/dashboard');
+      navigate('/');
     }
   }, [authLoading, mode, navigate]);
 
@@ -81,7 +81,7 @@ const SignUp: React.FC = () => {
         title: 'Account created!',
         description: 'Welcome to STEM Project Generator. Your account is ready.',
       });
-      navigate('/dashboard');
+      navigate('/');
     }
   };
 
@@ -117,7 +117,7 @@ const SignUp: React.FC = () => {
         title: 'Welcome, Guest!',
         description: 'You can explore all features. Create an account anytime to save your progress.',
       });
-      navigate('/dashboard');
+      navigate('/');
     }
   };
 

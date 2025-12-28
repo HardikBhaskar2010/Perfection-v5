@@ -4,7 +4,7 @@ import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { supabase } from '@/lib/supabase';
 
-// STEP 2: OAuth Callback Handler
+// OAuth Callback Handler
 const AuthCallback: React.FC = () => {
   const navigate = useNavigate();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
@@ -31,7 +31,7 @@ const AuthCallback: React.FC = () => {
           
           // Wait a moment for the auth context to update
           setTimeout(() => {
-            navigate('/dashboard');
+            navigate('/');
           }, 1500);
         } else {
           setStatus('error');

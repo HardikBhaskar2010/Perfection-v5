@@ -20,10 +20,10 @@ const Login: React.FC = () => {
     password: '',
   });
 
-  // Redirect authenticated users (including guests) to Dashboard
+  // Redirect authenticated users (including guests) to Home
   useEffect(() => {
     if (!authLoading && (mode === 'authenticated' || mode === 'guest')) {
-      navigate('/dashboard');
+      navigate('/');
     }
   }, [authLoading, mode, navigate]);
 
@@ -60,7 +60,7 @@ const Login: React.FC = () => {
         title: 'Welcome back!',
         description: 'You have been successfully signed in.',
       });
-      navigate('/dashboard');
+      navigate('/');
     }
   };
 
@@ -96,7 +96,7 @@ const Login: React.FC = () => {
         title: 'Welcome, Guest!',
         description: 'You can explore all features. Create an account anytime to save your progress.',
       });
-      navigate('/dashboard');
+      navigate('/');
     }
   };
 

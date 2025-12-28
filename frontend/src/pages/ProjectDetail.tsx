@@ -48,7 +48,7 @@ const ProjectDetail: React.FC = () => {
         description: 'Project not found',
         variant: 'destructive',
       });
-      navigate('/dashboard');
+      navigate('/');
     }
     setIsLoading(false);
   };
@@ -104,7 +104,7 @@ const ProjectDetail: React.FC = () => {
         title: 'Project deleted',
         description: 'The project has been removed',
       });
-      navigate('/dashboard');
+      navigate('/');
     }
   };
 
@@ -139,8 +139,8 @@ const ProjectDetail: React.FC = () => {
             <CardContent className="pt-6">
               <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
               <p className="text-center text-muted-foreground mb-4">Project not found</p>
-              <Button onClick={() => navigate('/dashboard')} className="w-full">
-                Back to Dashboard
+              <Button onClick={() => navigate('/')} className="w-full">
+                Back to Home
               </Button>
             </CardContent>
           </Card>
@@ -158,7 +158,7 @@ const ProjectDetail: React.FC = () => {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate('/')}
           className="gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
