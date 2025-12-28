@@ -139,6 +139,219 @@ const Home: React.FC = () => {
     }
   ];
 
+  // Loading state
+  if (authLoading) {
+    return (
+      <Layout>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin">
+            <Zap className="w-8 h-8 text-primary" />
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // DASHBOARD VIEW - For authenticated users only
+  if (showDashboard) {
+    return (
+      <Layout>
+        <PageHeader
+          title="My Dashboard"
+          description="View and manage your STEM projects"
+        >
+          <div className="flex justify-center">
+            <div className="p-4 bg-gradient-primary rounded-2xl shadow-glow animate-glow-pulse">
+              <TrendingUp className="w-12 h-12 text-white" />
+            </div>
+          </div>
+        </PageHeader>
+
+        <div className="container mx-auto px-4 py-8">
+          {/* Header with logout */}
+          <div className="max-w-6xl mx-auto mb-8 flex justify-between items-center">
+            <div>
+              <p className="text-muted-foreground">Welcome, {user?.email}</p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </Button>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid md:grid-cols-4 gap-4 max-w-6xl mx-auto mb-8">
+            <Card className="glass-effect border-border/50">
+              <CardContent className="pt-6">
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-gradient">{stats.total}</p>
+                  <p className="text-sm text-muted-foreground">Total Projects</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="glass-effect border-border/50">
+              <CardContent className="pt-6">
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-green-500">{stats.completed}</p>
+                  <p className="text-sm text-muted-foreground">Completed</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="glass-effect border-border/50">
+              <CardContent className="pt-6">
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-blue-500">{stats.inProgress}</p>
+                  <p className="text-sm text-muted-foreground">In Progress</p>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="glass-effect border-border/50">
+              <CardContent className="pt-6">
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-orange-500">{stats.planning}</p>
+                  <p className="text-sm text-muted-foreground">Planning</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Projects Section */}
+          <div className="max-w-6xl mx-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">Your Projects</h2>
+              <Button
+                className="bg-gradient-primary text-white"
+                onClick={() => navigate('/generator')}
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Generate New Project
+              </Button>
+            </div>
+
+            {/* Tabs */}
+            <div className="mb-6">
+              <Tabs value={activeTab} onValueChange={setActiveTab}>
+                <TabsList className="glass-effect">
+                  <TabsTrigger value="all">All Projects</TabsTrigger>
+                  <TabsTrigger value="planning">Planning</TabsTrigger>
+                  <TabsTrigger value="in-progress">In Progress</TabsTrigger>
+                  <TabsTrigger value="completed">Completed</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+
+            {/* Projects Grid */}
+            {isLoadingProjects ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin">
+                  <Zap className="w-8 h-8 text-primary" />
+                </div>
+              </div>
+            ) : filteredProjects.length > 0 ? (
+              <div className="grid md:grid-cols-2 gap-6">
+                {filteredProjects.map((project, index) => (
+                  <Card
+                    key={project.id}
+                    className="group glass-effect border-border/50"
+                    enableAnimation={true}
+                    enableHover={true}
+                    animationDelay={index * 50}
+                  >
+                    <CardHeader>
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex-1">
+                          <CardTitle className="text-lg">{project.title}</CardTitle>
+                          <CardDescription className="mt-1 line-clamp-2">
+                            {project.description}
+                          </CardDescription>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      {/* Status and Difficulty */}
+                      <div className="flex gap-2 flex-wrap">
+                        <Badge className={getStatusColor(project.status)}>
+                          {project.status}
+                        </Badge>
+                        <Badge variant="outline">{project.difficulty}</Badge>
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div>
+                        <div className="flex justify-between mb-1">
+                          <span className="text-sm text-muted-foreground">Progress</span>
+                          <span className="text-sm font-medium">{project.progress}%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-primary transition-all duration-500"
+                            style={{ width: `${project.progress}%` }}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Info */}
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div>
+                          <p className="text-muted-foreground">Estimated Time</p>
+                          <p className="font-medium">{project.estimated_time}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Budget</p>
+                          <p className="font-medium">{project.estimated_cost}</p>
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="flex-1"
+                          onClick={() => navigate(`/project/${project.id}`)}
+                        >
+                          <Eye className="w-4 h-4 mr-1" />
+                          View
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleDeleteProject(project.id)}
+                          className="text-destructive hover:bg-destructive/10"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card className="glass-effect border-border/50">
+                <CardContent className="py-12 text-center">
+                  <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground mb-4">No projects yet</p>
+                  <Button
+                    className="bg-gradient-primary text-white"
+                    onClick={() => navigate('/generator')}
+                  >
+                    <Zap className="w-4 h-4 mr-2" />
+                    Generate Your First Project
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // LANDING VIEW - For unauthenticated and guest users
   return (
     <Layout>
       {/* Hero Section */}
