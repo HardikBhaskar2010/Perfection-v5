@@ -1,19 +1,4 @@
-import {
-  collection,
-  addDoc,
-  getDocs,
-  doc,
-  updateDoc,
-  deleteDoc,
-  onSnapshot,
-  query,
-  orderBy,
-  where,
-  Timestamp,
-  type DocumentData,
-  type QuerySnapshot,
-} from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
 
 export interface Component {
   id?: string;
@@ -25,23 +10,38 @@ export interface Component {
   tags: string[];
   specifications?: Record<string, string>;
   imageUrl?: string;
-  createdAt?: Timestamp;
-  updatedAt?: Timestamp;
+  createdAt?: string;
+  updatedAt?: string;
 }
-
-const COLLECTION_NAME = 'components';
 
 export class ComponentService {
   // Add a new component
   async addComponent(component: Omit<Component, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
     try {
-      const now = Timestamp.now();
-      const docRef = await addDoc(collection(db, COLLECTION_NAME), {
-        ...component,
-        createdAt: now,
-        updatedAt: now,
-      });
-      return docRef.id;
+      const now = new Date().toISOString();
+      const { data, error } = await supabase
+        .from('components')
+        .insert({
+          name: component.name,
+          description: component.description,
+          category: component.category,
+          price: component.price,
+          stock: component.stock,
+          tags: component.tags,
+          specifications: component.specifications || {},
+          image_url: component.imageUrl || null,
+          created_at: now,
+          updated_at: now,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error adding component:', error);
+        throw new Error('Failed to add component');
+      }
+
+      return data.id;
     } catch (error) {
       console.error('Error adding component:', error);
       throw new Error('Failed to add component');
@@ -51,12 +51,17 @@ export class ComponentService {
   // Get all components
   async getComponents(): Promise<Component[]> {
     try {
-      const q = query(collection(db, COLLECTION_NAME), orderBy('createdAt', 'desc'));
-      const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Component[];
+      const { data, error } = await supabase
+        .from('components')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error getting components:', error);
+        throw new Error('Failed to fetch components');
+      }
+
+      return (data || []).map(this.mapFromDatabase);
     } catch (error) {
       console.error('Error getting components:', error);
       throw new Error('Failed to fetch components');
@@ -66,16 +71,18 @@ export class ComponentService {
   // Get components by category
   async getComponentsByCategory(category: string): Promise<Component[]> {
     try {
-      const q = query(
-        collection(db, COLLECTION_NAME),
-        where('category', '==', category),
-        orderBy('createdAt', 'desc')
-      );
-      const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Component[];
+      const { data, error } = await supabase
+        .from('components')
+        .select('*')
+        .eq('category', category)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error getting components by category:', error);
+        throw new Error('Failed to fetch components by category');
+      }
+
+      return (data || []).map(this.mapFromDatabase);
     } catch (error) {
       console.error('Error getting components by category:', error);
       throw new Error('Failed to fetch components by category');
@@ -85,11 +92,28 @@ export class ComponentService {
   // Update a component
   async updateComponent(id: string, updates: Partial<Component>): Promise<void> {
     try {
-      const componentRef = doc(db, COLLECTION_NAME, id);
-      await updateDoc(componentRef, {
-        ...updates,
-        updatedAt: Timestamp.now(),
-      });
+      const updateData: any = {
+        updated_at: new Date().toISOString(),
+      };
+
+      if (updates.name) updateData.name = updates.name;
+      if (updates.description) updateData.description = updates.description;
+      if (updates.category) updateData.category = updates.category;
+      if (updates.price) updateData.price = updates.price;
+      if (updates.stock) updateData.stock = updates.stock;
+      if (updates.tags) updateData.tags = updates.tags;
+      if (updates.specifications) updateData.specifications = updates.specifications;
+      if (updates.imageUrl !== undefined) updateData.image_url = updates.imageUrl;
+
+      const { error } = await supabase
+        .from('components')
+        .update(updateData)
+        .eq('id', id);
+
+      if (error) {
+        console.error('Error updating component:', error);
+        throw new Error('Failed to update component');
+      }
     } catch (error) {
       console.error('Error updating component:', error);
       throw new Error('Failed to update component');
@@ -99,7 +123,15 @@ export class ComponentService {
   // Delete a component
   async deleteComponent(id: string): Promise<void> {
     try {
-      await deleteDoc(doc(db, COLLECTION_NAME, id));
+      const { error } = await supabase
+        .from('components')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error('Error deleting component:', error);
+        throw new Error('Failed to delete component');
+      }
     } catch (error) {
       console.error('Error deleting component:', error);
       throw new Error('Failed to delete component');
@@ -112,25 +144,44 @@ export class ComponentService {
     category?: string
   ): () => void {
     try {
-      let q = query(collection(db, COLLECTION_NAME), orderBy('createdAt', 'desc'));
-      
-      if (category && category !== 'all') {
-        q = query(
-          collection(db, COLLECTION_NAME),
-          where('category', '==', category),
-          orderBy('createdAt', 'desc')
-        );
-      }
+      let channel;
 
-      const unsubscribe = onSnapshot(q, (querySnapshot: QuerySnapshot<DocumentData>) => {
-        const components = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-        })) as Component[];
-        callback(components);
-      });
+      const fetchAndNotify = async () => {
+        try {
+          const components = category && category !== 'all' 
+            ? await this.getComponentsByCategory(category)
+            : await this.getComponents();
+          callback(components);
+        } catch (error) {
+          console.error('Error fetching components:', error);
+        }
+      };
 
-      return unsubscribe;
+      // Initial fetch
+      fetchAndNotify();
+
+      // Subscribe to changes
+      channel = supabase
+        .channel('components-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'components',
+            ...(category && category !== 'all' ? { filter: `category=eq.${category}` } : {})
+          },
+          () => {
+            fetchAndNotify();
+          }
+        )
+        .subscribe();
+
+      return () => {
+        if (channel) {
+          supabase.removeChannel(channel);
+        }
+      };
     } catch (error) {
       console.error('Error subscribing to components:', error);
       throw new Error('Failed to subscribe to components');
@@ -140,9 +191,6 @@ export class ComponentService {
   // Search components
   async searchComponents(searchTerm: string): Promise<Component[]> {
     try {
-      // Note: Firestore doesn't support full-text search natively
-      // This is a simple implementation that gets all components and filters client-side
-      // For production, consider using Algolia or similar service for better search
       const components = await this.getComponents();
       const lowercaseSearch = searchTerm.toLowerCase();
       
@@ -156,6 +204,23 @@ export class ComponentService {
       console.error('Error searching components:', error);
       throw new Error('Failed to search components');
     }
+  }
+
+  // Helper method to map database fields to Component interface
+  private mapFromDatabase(dbComponent: any): Component {
+    return {
+      id: dbComponent.id,
+      name: dbComponent.name,
+      description: dbComponent.description,
+      category: dbComponent.category,
+      price: dbComponent.price,
+      stock: dbComponent.stock,
+      tags: dbComponent.tags || [],
+      specifications: dbComponent.specifications || {},
+      imageUrl: dbComponent.image_url,
+      createdAt: dbComponent.created_at,
+      updatedAt: dbComponent.updated_at,
+    };
   }
 }
 
