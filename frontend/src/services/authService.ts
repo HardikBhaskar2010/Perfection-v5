@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import type { AuthError, User } from '@supabase/supabase-js';
+import { guestService, type GuestUser } from './guestService';
 
 export interface SignUpData {
   email: string;
@@ -13,8 +14,9 @@ export interface SignInData {
 }
 
 export interface AuthResponse {
-  user: User | null;
+  user: User | GuestUser | null;
   error: AuthError | null;
+  isGuest?: boolean;
 }
 
 class AuthService {
@@ -65,7 +67,7 @@ class AuthService {
         return { user: null, error };
       }
 
-      return { user: authData.user, error: null };
+      return { user: authData.user, error: null, isGuest: false };
     } catch (error) {
       console.error('Sign in error:', error);
       return {
@@ -75,9 +77,54 @@ class AuthService {
     }
   }
 
+  // Sign in with Google OAuth
+  async signInWithGoogle(): Promise<{ error: AuthError | null }> {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+      return { error };
+    } catch (error) {
+      console.error('Google sign in error:', error);
+      return { error: error as AuthError };
+    }
+  }
+
+  // Continue as Guest
+  async continueAsGuest(): Promise<AuthResponse> {
+    try {
+      const guestUser = guestService.getOrCreateGuest();
+      return { 
+        user: guestUser, 
+        error: null, 
+        isGuest: true 
+      };
+    } catch (error) {
+      console.error('Guest mode error:', error);
+      return {
+        user: null,
+        error: { message: 'Failed to create guest session' } as AuthError,
+      };
+    }
+  }
+
   async signOut(): Promise<{ error: AuthError | null }> {
     try {
+      // Check if guest user
+      if (guestService.isGuest()) {
+        guestService.clearGuestData();
+        return { error: null };
+      }
+
+      // Regular user logout
       const { error } = await supabase.auth.signOut();
+      
+      // Clear any local storage
+      localStorage.removeItem('user_projects');
+      
       return { error };
     } catch (error) {
       console.error('Sign out error:', error);
@@ -85,14 +132,24 @@ class AuthService {
     }
   }
 
-  async getCurrentUser(): Promise<User | null> {
+  async getCurrentUser(): Promise<User | GuestUser | null> {
     try {
+      // Check for guest user first
+      if (guestService.isGuest()) {
+        return guestService.getGuest();
+      }
+
+      // Check for authenticated user
       const { data: { user } } = await supabase.auth.getUser();
       return user || null;
     } catch (error) {
       console.error('Get current user error:', error);
       return null;
     }
+  }
+
+  isGuestUser(user: User | GuestUser | null): user is GuestUser {
+    return user !== null && 'isGuest' in user && user.isGuest === true;
   }
 
   async resetPassword(email: string): Promise<{ error: AuthError | null }> {
@@ -107,7 +164,41 @@ class AuthService {
     }
   }
 
-  onAuthStateChange(callback: (user: User | null) => void) {
+  // Upgrade guest to real account (migrate data)
+  async upgradeGuestToAccount(data: SignUpData): Promise<AuthResponse> {
+    try {
+      // Get guest data before clearing
+      const guestData = guestService.getDataForMigration();
+
+      // Create real account
+      const result = await this.signUp(data);
+
+      if (result.user && !result.error) {
+        // TODO: Migrate guest projects to the new user account
+        // This would require backend API to save projects
+        console.log('Guest data to migrate:', guestData);
+
+        // Clear guest data
+        guestService.clearGuestData();
+      }
+
+      return result;
+    } catch (error) {
+      console.error('Upgrade error:', error);
+      return {
+        user: null,
+        error: error as AuthError,
+      };
+    }
+  }
+
+  onAuthStateChange(callback: (user: User | GuestUser | null) => void) {
+    // Check for guest on mount
+    if (guestService.isGuest()) {
+      callback(guestService.getGuest());
+    }
+
+    // Listen for real auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       callback(session?.user || null);
     });

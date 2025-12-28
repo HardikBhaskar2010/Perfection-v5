@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { LogIn, Mail, Lock, AlertCircle } from 'lucide-react';
+import { LogIn, Mail, Lock, AlertCircle, Chrome, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
 import { authService } from '@/services/authService';
 import { toast } from '@/hooks/use-toast';
 
@@ -54,6 +55,42 @@ const Login: React.FC = () => {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    const { error: authError } = await authService.signInWithGoogle();
+
+    if (authError) {
+      setError(authError.message || 'Failed to sign in with Google');
+      setIsLoading(false);
+      return;
+    }
+
+    // OAuth redirect will handle navigation
+  };
+
+  const handleGuestMode = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    const { user, error: authError } = await authService.continueAsGuest();
+
+    if (authError) {
+      setError(authError.message || 'Failed to enter guest mode');
+      setIsLoading(false);
+      return;
+    }
+
+    if (user) {
+      toast({
+        title: 'Welcome, Guest!',
+        description: 'You can explore all features. Create an account anytime to save your progress.',
+      });
+      navigate('/dashboard');
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-secondary/5 px-4">
       <Card className="w-full max-w-md glass-effect border-border/50">
@@ -89,6 +126,7 @@ const Login: React.FC = () => {
                   onChange={handleChange}
                   disabled={isLoading}
                   className="pl-10"
+                  data-testid="login-email-input"
                 />
               </div>
             </div>
@@ -106,6 +144,7 @@ const Login: React.FC = () => {
                   onChange={handleChange}
                   disabled={isLoading}
                   className="pl-10"
+                  data-testid="login-password-input"
                 />
               </div>
             </div>
@@ -114,12 +153,49 @@ const Login: React.FC = () => {
               type="submit"
               className="w-full bg-gradient-primary text-white"
               disabled={isLoading}
+              data-testid="login-submit-button"
             >
               {isLoading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
 
-          <div className="text-center text-sm">
+          <div className="relative my-6">
+            <Separator />
+            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">
+              OR
+            </span>
+          </div>
+
+          {/* Google Sign In */}
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={handleGoogleSignIn}
+            disabled={isLoading}
+            data-testid="google-signin-button"
+          >
+            <Chrome className="mr-2 h-4 w-4" />
+            Continue with Google
+          </Button>
+
+          {/* Guest Mode */}
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full border-dashed"
+            onClick={handleGuestMode}
+            disabled={isLoading}
+            data-testid="guest-mode-button"
+          >
+            <UserCircle className="mr-2 h-4 w-4" />
+            Continue as Guest
+          </Button>
+          <p className="text-xs text-center text-muted-foreground">
+            Guest mode: Full experience, create account anytime
+          </p>
+
+          <div className="text-center text-sm mt-4">
             <span className="text-muted-foreground">Don't have an account? </span>
             <Link to="/signup" className="text-primary hover:underline font-medium">
               Sign up

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, Calendar, Settings, LogOut, Save, Camera, Eye, EyeOff, School, Palette, Check, Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { User, Mail, Calendar, Settings, LogOut, Save, Camera, Eye, EyeOff, School, Palette, Check, Zap, Lock, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -14,6 +15,10 @@ import { Switch } from '@/components/ui/switch';
 import { usePreferences, COLOR_THEMES, ColorTheme } from '@/contexts/PreferencesContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePerf } from '@/contexts/PerfContext';
+import { authService } from '@/services/authService';
+import PreferencesDialog from '@/components/PreferencesDialog';
+import PrivacySettingsDialog from '@/components/PrivacySettingsDialog';
+import EmailPreferencesDialog from '@/components/EmailPreferencesDialog';
 import {
   Dialog,
   DialogContent,
@@ -21,6 +26,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 // Define project type
 interface Project {
@@ -44,12 +59,18 @@ interface Achievement {
 }
 
 const Profile: React.FC = () => {
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const { userMode, setUserMode, colorTheme, setColorTheme } = usePreferences();
   const { user } = useAuth();
   const { lowPerf, setLowPerf, suggested } = usePerf();
   const [projects, setProjects] = useState<Project[]>([]);
   const [colorDialogOpen, setColorDialogOpen] = useState(false);
+  const [preferencesDialogOpen, setPreferencesDialogOpen] = useState(false);
+  const [privacyDialogOpen, setPrivacyDialogOpen] = useState(false);
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  const isGuest = user && authService.isGuestUser(user);
   
   const [userData, setUserData] = useState({
     name: user?.email?.split('@')[0] || 'STEM Maker',
@@ -142,11 +163,25 @@ const Profile: React.FC = () => {
     });
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const { error } = await authService.signOut();
+    
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to log out. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     toast({
       title: "Logged Out",
-      description: "You have been successfully logged out.",
+      description: isGuest ? "Guest session cleared." : "You have been successfully logged out.",
     });
+    
+    // Redirect to home page
+    navigate('/');
   };
 
   return (
@@ -442,22 +477,31 @@ const Profile: React.FC = () => {
                   </Badge>
                 </Button>
 
-                <Button variant="outline" className="w-full justify-start click-spark">
+                <Button variant="outline" className="w-full justify-start click-spark"
+                  onClick={() => setPreferencesDialogOpen(true)}
+                  data-testid="preferences-button">
                   <Settings className="mr-2 h-4 w-4" />
                   Preferences
                 </Button>
-                <Button variant="outline" className="w-full justify-start click-spark">
-                  <User className="mr-2 h-4 w-4" />
+                <Button variant="outline" className="w-full justify-start click-spark"
+                  onClick={() => setPrivacyDialogOpen(true)}
+                  data-testid="privacy-button">
+                  <Lock className="mr-2 h-4 w-4" />
                   Privacy Settings
                 </Button>
-                <Button variant="outline" className="w-full justify-start click-spark">
-                  <Mail className="mr-2 h-4 w-4" />
+                <Button variant="outline" className="w-full justify-start click-spark"
+                  onClick={() => setEmailDialogOpen(true)}
+                  data-testid="email-notifications-button"
+                  disabled={isGuest}>
+                  <Bell className="mr-2 h-4 w-4" />
                   Email Notifications
+                  {isGuest && <Badge variant="outline" className="ml-auto text-xs">Account Required</Badge>}
                 </Button>
                 <Button 
-                  onClick={handleLogout}
+                  onClick={() => setLogoutDialogOpen(true)}
                   variant="outline" 
                   className="w-full justify-start text-destructive hover:bg-destructive/10 click-spark"
+                  data-testid="logout-button"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
                   Log Out
@@ -533,6 +577,47 @@ const Profile: React.FC = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Preferences Dialog */}
+      <PreferencesDialog 
+        open={preferencesDialogOpen} 
+        onOpenChange={setPreferencesDialogOpen} 
+      />
+
+      {/* Privacy Settings Dialog */}
+      <PrivacySettingsDialog 
+        open={privacyDialogOpen} 
+        onOpenChange={setPrivacyDialogOpen} 
+      />
+
+      {/* Email Preferences Dialog */}
+      <EmailPreferencesDialog 
+        open={emailDialogOpen} 
+        onOpenChange={setEmailDialogOpen} 
+      />
+
+      {/* Logout Confirmation Dialog */}
+      <AlertDialog open={logoutDialogOpen} onOpenChange={setLogoutDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {isGuest 
+                ? "Your guest session data will be cleared. Consider creating an account to save your progress."
+                : "You will need to log in again to access your account."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleLogout}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Log Out
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Layout>
   );
 };
