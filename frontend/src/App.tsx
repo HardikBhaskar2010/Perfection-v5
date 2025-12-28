@@ -59,7 +59,8 @@ const App = () => (
                     <PerfPromptBanner />
                     <Suspense fallback={<PageLoading />}>
                       <Routes>
-                        <Route path="/" element={<Home />} />
+                        <Route path="/" element={<Login />} />
+                        <Route path="/home" element={<Home />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<SignUp />} />
                         <Route path="/dashboard" element={<Dashboard />} />
