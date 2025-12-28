@@ -31,9 +31,16 @@ const Home: React.FC = () => {
   const heroDescRef = useScrollAnimation<HTMLParagraphElement>({ animation: 'fadeIn', delay: 400 });
   const heroButtonsRef = useScrollAnimation<HTMLDivElement>({ animation: 'fadeIn', delay: 600 });
 
+  // Redirect unauthenticated users to login
+  useEffect(() => {
+    if (!authLoading && mode === 'unauthenticated') {
+      navigate('/login');
+    }
+  }, [authLoading, mode, navigate]);
+
   // Determine which view to show
   const showDashboard = mode === 'authenticated';
-  const showLanding = mode === 'unauthenticated' || mode === 'guest';
+  const showLanding = mode === 'guest';
 
   // Load projects for dashboard view
   useEffect(() => {
