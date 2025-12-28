@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Zap, Cpu, BookOpen, ArrowRight, Sparkles, Rocket, Brain } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import Layout from '@/components/layout/Layout';
 import { useTutorial } from '@/contexts/TutorialContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Home: React.FC = () => {
+  const navigate = useNavigate();
+  const { mode, isLoading } = useAuth();
   const { tutorialState, startWelcomeTour } = useTutorial();
 
   // Animation refs for hero section
@@ -15,6 +18,13 @@ const Home: React.FC = () => {
   const heroTitleRef = useScrollAnimation<HTMLHeadingElement>({ animation: 'fadeIn', delay: 200 });
   const heroDescRef = useScrollAnimation<HTMLParagraphElement>({ animation: 'fadeIn', delay: 400 });
   const heroButtonsRef = useScrollAnimation<HTMLDivElement>({ animation: 'fadeIn', delay: 600 });
+
+  // Redirect authenticated users (including guests) to Dashboard
+  useEffect(() => {
+    if (!isLoading && (mode === 'authenticated' || mode === 'guest')) {
+      navigate('/dashboard');
+    }
+  }, [isLoading, mode, navigate]);
 
   // Start welcome tour on first visit
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { LogIn, Mail, Lock, AlertCircle, Chrome, UserCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,15 +8,24 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { authService } from '@/services/authService';
 import { toast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
+  const { mode, isLoading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+
+  // Redirect authenticated users (including guests) to Dashboard
+  useEffect(() => {
+    if (!authLoading && (mode === 'authenticated' || mode === 'guest')) {
+      navigate('/dashboard');
+    }
+  }, [authLoading, mode, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
