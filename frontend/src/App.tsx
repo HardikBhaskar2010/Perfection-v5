@@ -63,7 +63,6 @@ const App = () => (
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<SignUp />} />
                         <Route path="/auth/callback" element={<AuthCallback />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
                         <Route path="/project/:id" element={<ProjectDetail />} />
                         <Route path="/generator" element={<Generator />} />
                         <Route path="/components" element={<Components />} />
