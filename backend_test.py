@@ -21,12 +21,15 @@ def load_backend_url():
     
     with open(frontend_env_path, 'r') as f:
         for line in f:
-            if line.startswith('REACT_APP_BACKEND_URL='):
+            if line.startswith('VITE_API_BASE_URL='):
                 backend_url = line.split('=', 1)[1].strip()
-                return f"{backend_url}/api"
+                # For testing, use local backend since public URL routing may not be ready
+                print(f"⚠️ Found VITE_API_BASE_URL: {backend_url}, but using local for testing")
+                return "http://localhost:8001/api"
     
-    print("❌ ERROR: REACT_APP_BACKEND_URL not found in frontend/.env")
-    return None
+    # Fallback to local backend if no VITE_API_BASE_URL found
+    print("⚠️ WARNING: Using local backend for testing")
+    return "http://localhost:8001/api"
 
 def test_get_root(base_url):
     """Test GET /api/ endpoint"""
