@@ -90,40 +90,149 @@ async def get_status_checks():
 @api_router.post("/generate-project", response_model=GeneratedProject)
 async def generate_project(params: ProjectParams):
     """
-    Generate a STEM project based on user parameters
+    Generate ATAL-focused STEM project based on user parameters
     
-    This is a smart generator that creates personalized project suggestions
-    based on user inputs like project type, skill level, interests, budget, and duration.
+    Enhanced generator for Atal Tinkering Lab projects with detailed
+    component specifications, learning outcomes, and step-by-step guidance.
     """
     try:
         logger.info(f"Generating project for: {params.projectType}, skill: {params.skillLevel}")
         
-        # Project type specific configurations
+        # Enhanced project configurations with ATAL components
         project_configs = {
             "robotics": {
-                "components_base": ["Microcontroller (Arduino Uno/Mega)", "Motor Driver (L298N)", "DC Motors", "Chassis", "Wheels", "Battery Pack", "Ultrasonic Sensor"],
-                "skills_base": ["Robot mechanics", "Motor control", "Sensor integration", "Path planning"],
-                "cost_range": {"beginner": "$40-60", "intermediate": "$60-90", "advanced": "$90-150", "expert": "$150-250"}
+                "components_base": [
+                    "Arduino Uno R3 (ATmega328P Microcontroller)",
+                    "L298N Motor Driver Module (Dual H-Bridge)",
+                    "2x BO DC Geared Motors with Wheels (60-200 RPM)",
+                    "2WD Robot Chassis (Acrylic with Battery Holder)",
+                    "HC-SR04 Ultrasonic Sensor (2-400cm range)",
+                    "4xAA Battery Holder with ON/OFF Switch",
+                    "Jumper Wires (Male-Male, Male-Female)",
+                    "Mini Breadboard 400 points"
+                ],
+                "skills_base": [
+                    "Arduino programming basics (C/C++)",
+                    "PWM (Pulse Width Modulation) for motor speed control",
+                    "Ultrasonic sensor interfacing and distance measurement",
+                    "H-Bridge motor driver operation and direction control",
+                    "Robot kinematics and movement logic",
+                    "Power management for mobile robots"
+                ],
+                "cost_range": {"beginner": "₹800-1200", "intermediate": "₹1200-2000", "advanced": "₹2000-3500", "expert": "₹3500-6000"},
+                "learning_outcomes": [
+                    "Understand basics of mobile robotics and actuation",
+                    "Learn motor control using PWM signals",
+                    "Master sensor integration for autonomous behavior",
+                    "Develop problem-solving skills through robot debugging"
+                ]
             },
             "iot": {
-                "components_base": ["ESP32/ESP8266 WiFi Module", "DHT22 Sensor", "Breadboard", "Jumper Wires", "Power Supply", "LED Indicators"],
-                "skills_base": ["IoT protocols", "WiFi connectivity", "Cloud integration", "Data visualization"],
-                "cost_range": {"beginner": "$30-50", "intermediate": "$50-80", "advanced": "$80-130", "expert": "$130-200"}
+                "components_base": [
+                    "ESP32 DevKit (Dual-core WiFi + Bluetooth)",
+                    "DHT22 Temperature & Humidity Sensor (High precision)",
+                    "BMP280 Barometric Pressure Sensor (I2C)",
+                    "0.96\" OLED Display 128x64 (I2C Interface)",
+                    "Mini Breadboard with Jumper Wires",
+                    "5V 2A Power Adapter or USB Cable",
+                    "Micro USB Cable for Programming"
+                ],
+                "skills_base": [
+                    "ESP32 programming with Arduino IDE/MicroPython",
+                    "WiFi connectivity and HTTP requests",
+                    "I2C communication protocol",
+                    "IoT platforms (ThingSpeak, Blynk, Firebase)",
+                    "Data visualization and cloud integration",
+                    "Sensor data processing and filtering"
+                ],
+                "cost_range": {"beginner": "₹600-1000", "intermediate": "₹1000-1800", "advanced": "₹1800-3000", "expert": "₹3000-5000"},
+                "learning_outcomes": [
+                    "Master wireless communication protocols",
+                    "Learn cloud-based data storage and retrieval",
+                    "Understand IoT architecture and data flow",
+                    "Create web dashboards for monitoring"
+                ]
             },
             "electronics": {
-                "components_base": ["Arduino Nano", "Resistors", "Capacitors", "LEDs", "Transistors", "Breadboard", "Multimeter"],
-                "skills_base": ["Circuit design", "Component selection", "PCB basics", "Troubleshooting"],
-                "cost_range": {"beginner": "$25-45", "intermediate": "$45-70", "advanced": "$70-120", "expert": "$120-180"}
+                "components_base": [
+                    "Arduino Nano (Compact ATmega328P board)",
+                    "Resistor Kit (10Ω to 1MΩ, 1/4W, ±5%)",
+                    "LED Assortment (5mm - Red, Green, Blue, Yellow, White)",
+                    "Ceramic Capacitor Kit (10pF to 100nF)",
+                    "2N2222 NPN Transistors (for switching)",
+                    "1N4007 Diodes (Rectifier, 1000V 1A)",
+                    "Solderless Breadboard 830 points",
+                    "Digital Multimeter for measurements"
+                ],
+                "skills_base": [
+                    "Basic circuit analysis (Ohm's Law, Kirchhoff's Laws)",
+                    "LED current limiting resistor calculation",
+                    "Transistor as switch and amplifier",
+                    "Capacitor charging/discharging characteristics",
+                    "PCB design fundamentals",
+                    "Soldering techniques and practices"
+                ],
+                "cost_range": {"beginner": "₹500-900", "intermediate": "₹900-1500", "advanced": "₹1500-2500", "expert": "₹2500-4000"},
+                "learning_outcomes": [
+                    "Build strong foundation in analog electronics",
+                    "Master breadboard prototyping techniques",
+                    "Learn to read and create circuit diagrams",
+                    "Develop systematic troubleshooting skills"
+                ]
             },
             "automation": {
-                "components_base": ["Relay Modules", "Sensors (PIR, LDR)", "Arduino/ESP32", "Power Supply", "Enclosure", "Wiring"],
-                "skills_base": ["Home automation", "Relay control", "Sensor logic", "System integration"],
-                "cost_range": {"beginner": "$35-55", "intermediate": "$55-85", "advanced": "$85-140", "expert": "$140-220"}
+                "components_base": [
+                    "Arduino Uno R3 / ESP32 (for WiFi control)",
+                    "4-Channel 5V Relay Module (10A 250V AC rating)",
+                    "PIR Motion Sensor HC-SR501 (7m range, 120° angle)",
+                    "LDR (Light Dependent Resistor) with 10kΩ resistor",
+                    "DHT11 Temperature & Humidity Sensor",
+                    "16x2 LCD Display with I2C Module",
+                    "5V 2A Power Supply",
+                    "Connecting Wires and Terminal Blocks"
+                ],
+                "skills_base": [
+                    "Relay control and isolation techniques",
+                    "Sensor-based decision making logic",
+                    "Interrupt handling for motion detection",
+                    "Home automation protocols",
+                    "Safety considerations for AC appliances",
+                    "Timer and scheduling implementations"
+                ],
+                "cost_range": {"beginner": "₹700-1200", "intermediate": "₹1200-2000", "advanced": "₹2000-3500", "expert": "₹3500-5500"},
+                "learning_outcomes": [
+                    "Understand home automation systems",
+                    "Learn safe AC appliance control",
+                    "Master sensor fusion for smart decisions",
+                    "Create practical IoT automation solutions"
+                ]
             },
             "sensors": {
-                "components_base": ["Multiple Sensors (Temperature, Humidity, Gas)", "Arduino Uno", "LCD Display", "SD Card Module", "Real-time Clock"],
-                "skills_base": ["Sensor calibration", "Data logging", "Signal processing", "Display interfaces"],
-                "cost_range": {"beginner": "$30-50", "intermediate": "$50-75", "advanced": "$75-110", "expert": "$110-170"}
+                "components_base": [
+                    "Arduino Uno R3 (Microcontroller)",
+                    "DHT22 (Temp & Humidity - High accuracy)",
+                    "MQ-135 Air Quality Sensor (NH3, NOx, CO2)",
+                    "BH1750 Digital Light Sensor (I2C, 1-65535 lux)",
+                    "20x4 LCD Display with I2C",
+                    "MicroSD Card Module (for data logging)",
+                    "DS3231 RTC Module (±2ppm accuracy)",
+                    "Breadboard and Connecting Wires"
+                ],
+                "skills_base": [
+                    "Multi-sensor integration and management",
+                    "I2C bus communication and addressing",
+                    "Data logging to SD card (CSV format)",
+                    "Real-time clock for timestamping",
+                    "Sensor calibration techniques",
+                    "Data visualization using Serial Plotter"
+                ],
+                "cost_range": {"beginner": "₹800-1400", "intermediate": "₹1400-2200", "advanced": "₹2200-3500", "expert": "₹3500-5500"},
+                "learning_outcomes": [
+                    "Master sensor interfacing techniques",
+                    "Learn data acquisition and logging",
+                    "Understand environmental monitoring systems",
+                    "Develop data analysis skills"
+                ]
             }
         }
         
@@ -133,98 +242,138 @@ async def generate_project(params: ProjectParams):
         # Skill level adjustments
         skill_level_lower = params.skillLevel.lower()
         time_estimates = {
-            "beginner": "1-2 weeks",
-            "intermediate": "2-4 weeks", 
-            "advanced": "4-6 weeks",
-            "expert": "6-10 weeks"
+            "beginner": "1-2 weeks (8-15 hours total)",
+            "intermediate": "2-4 weeks (20-35 hours total)", 
+            "advanced": "4-8 weeks (40-70 hours total)",
+            "expert": "8-12 weeks (80-120 hours total)"
         }
         
-        # Build project title based on interests
-        interest_keywords = params.interests.lower() if params.interests else ""
+        # Enhanced project titles with real-world applications
         project_titles = {
-            "robotics": [
-                "Autonomous Line Following Robot",
-                "Obstacle Avoiding Smart Car",
-                "Bluetooth Controlled Robot",
-                "Voice Controlled Robotic Arm"
-            ],
-            "iot": [
-                "Smart Home Weather Station",
-                "IoT Plant Monitoring System",
-                "Smart Energy Monitor",
-                "WiFi-Enabled Security System"
-            ],
-            "electronics": [
-                "LED Music Visualizer",
-                "Digital Thermometer with Display",
-                "Battery Capacity Tester",
-                "Function Generator"
-            ],
-            "automation": [
-                "Smart Light Control System",
-                "Automated Garden Watering",
-                "Motion-Activated Security Light",
-                "Temperature-Based Fan Controller"
-            ],
-            "sensors": [
-                "Environmental Monitoring Station",
-                "Multi-Sensor Data Logger",
-                "Air Quality Detector",
-                "Wireless Sensor Network"
-            ]
+            "robotics": {
+                "beginner": ["Line Following Robot for Warehouse Navigation", "Obstacle Avoiding Car with Ultrasonic Sensors"],
+                "intermediate": ["Bluetooth Controlled Robot with Mobile App", "Gesture Controlled Robot using Accelerometer"],
+                "advanced": ["Autonomous Maze Solving Robot with Wall Following", "Voice Controlled Robotic Arm with Inverse Kinematics"],
+                "expert": ["SLAM-based Mapping Robot with ROS", "Quadruped Walking Robot with Servo Control"]
+            },
+            "iot": {
+                "beginner": ["WiFi Weather Station with Web Dashboard", "Smart Plant Monitoring System with Alerts"],
+                "intermediate": ["IoT Home Security System with Mobile Notifications", "Remote Controlled Appliances via Blynk App"],
+                "advanced": ["Multi-Room Environmental Monitoring Network", "Smart Energy Meter with Power Analytics"],
+                "expert": ["Complete Smart Home System with Voice Control", "Industrial IoT Sensor Network with MQTT"]
+            },
+            "electronics": {
+                "beginner": ["LED Chaser with 555 Timer IC", "Temperature Indicator using LM35 and LEDs"],
+                "intermediate": ["Digital Voltmeter with LCD Display", "Automatic Night Light using LDR and Transistor"],
+                "advanced": ["Function Generator with Multiple Waveforms", "Battery Capacity Tester with Data Logging"],
+                "expert": ["Digital Oscilloscope using Arduino", "Impedance Analyzer for Component Testing"]
+            },
+            "automation": {
+                "beginner": ["Automatic Room Light using PIR Sensor", "Temperature Controlled Fan with LCD"],
+                "intermediate": ["Smart Irrigation System with Soil Moisture", "Automatic Curtain Controller with Light Sensor"],
+                "advanced": ["Complete Home Automation with Mobile Control", "Smart Door Lock with RFID and Keypad"],
+                "expert": ["Voice Controlled Home with Multiple Zones", "AI-based Energy Management System"]
+            },
+            "sensors": {
+                "beginner": ["Multi-Sensor Data Logger to SD Card", "Room Environment Monitor with OLED Display"],
+                "intermediate": ["Air Quality Monitoring Station with Alerts", "Weather Station with Wireless Data Upload"],
+                "advanced": ["Portable Environmental Analysis Kit", "Industrial Gas Leak Detection System"],
+                "expert": ["Distributed Sensor Network with Edge Computing", "AI-Powered Predictive Maintenance System"]
+            }
         }
         
-        # Select appropriate title
+        # Select appropriate title based on skill level
         titles = project_titles.get(params.projectType.lower(), project_titles["electronics"])
-        project_title = random.choice(titles)
+        if isinstance(titles, dict):
+            project_title = random.choice(titles.get(skill_level_lower, titles["beginner"]))
+        else:
+            project_title = random.choice(titles)
         
-        # Generate description
-        description = f"A {skill_level_lower}-level {params.projectType.lower()} project that combines hands-on electronics with practical applications. "
+        # Enhanced description with learning outcomes
+        description = f"A comprehensive {skill_level_lower}-level {params.projectType.lower()} project designed for Atal Tinkering Labs. "
+        description += f"This project combines theoretical concepts with hands-on implementation, perfect for students learning STEM. "
         if params.interests:
-            description += f"Tailored for interests in {params.interests}. "
-        description += "This project will help you develop both theoretical knowledge and practical skills."
+            description += f"Customized for your interests in {params.interests}, making learning more engaging and relevant. "
+        description += f"You'll gain practical experience with real-world components and develop problem-solving skills through iterative building and testing."
         
-        # Build components list
+        # Build comprehensive components list with specifications
         components = config["components_base"].copy()
         
-        # Add skill-level specific components
+        # Add skill-level specific enhancements
+        if skill_level_lower in ["intermediate", "advanced", "expert"]:
+            components.extend([
+                "0.96\" OLED Display I2C (128x64) for better UI",
+                "Buzzer Module for audio feedback"
+            ])
         if skill_level_lower in ["advanced", "expert"]:
-            components.extend(["OLED Display", "Mobile App Interface Components"])
+            components.extend([
+                "nRF24L01+ Wireless Module for long-range communication",
+                "HC-05 Bluetooth Module for mobile connectivity"
+            ])
         if skill_level_lower == "expert":
-            components.extend(["Custom PCB", "3D Printed Enclosure"])
+            components.extend([
+                "Custom PCB design and fabrication",
+                "3D Printed Enclosure with CAD design",
+                "Mobile App development (MIT App Inventor / Flutter)"
+            ])
         
-        # Build skills list
+        # Enhanced skills with detailed learning points
         skills = config["skills_base"].copy()
-        skills.extend([f"{params.projectType} programming", "Circuit debugging", "Project documentation"])
+        skills.extend([
+            f"Arduino/ESP32 programming for {params.projectType}",
+            "Circuit debugging using multimeter and logic analyzer",
+            "Technical documentation and project presentation",
+            "Safety practices for electronics and soldering"
+        ])
         
-        # Build steps
+        if skill_level_lower in ["advanced", "expert"]:
+            skills.extend([
+                "Version control using Git for code management",
+                "PCB design using EasyEDA or KiCad",
+                "3D modeling for enclosure design"
+            ])
+        
+        # Detailed step-by-step implementation guide
         steps = [
-            "Research project requirements and gather documentation",
-            "Plan circuit design and component layout",
-            "Order and verify all required components",
-            "Build and test basic circuit on breadboard",
-            "Develop and upload initial code",
-            "Test individual component functionality",
-            "Integrate all components together",
-            "Debug and troubleshoot issues",
-            "Optimize code and circuit design",
-            "Create final enclosure (if applicable)",
-            "Document project with photos and notes"
+            "📚 Phase 1: Research & Planning\n   - Study project requirements and objectives\n   - Review datasheets for all components\n   - Create block diagram of system architecture\n   - List all required tools and materials",
+            
+            "🎯 Phase 2: Component Procurement\n   - Order components from ATAL-approved vendors\n   - Verify all components upon arrival\n   - Test individual components before integration\n   - Organize components in labeled containers",
+            
+            "📐 Phase 3: Circuit Design\n   - Draw circuit schematic on paper/software\n   - Calculate resistor values for LEDs and sensors\n   - Plan breadboard layout for easy debugging\n   - Verify power requirements and ratings",
+            
+            "🔌 Phase 4: Breadboard Prototyping\n   - Assemble basic circuit on breadboard\n   - Check all connections with multimeter\n   - Test power supply voltages (3.3V, 5V, 12V)\n   - Ensure proper grounding throughout circuit",
+            
+            "💻 Phase 5: Software Development\n   - Set up Arduino IDE with required libraries\n   - Write pseudocode for main logic flow\n   - Implement code in modular functions\n   - Add comments explaining each section",
+            
+            "🧪 Phase 6: Component Testing\n   - Test each sensor/module independently\n   - Verify sensor readings with known values\n   - Check actuator responses (motors, relays, LEDs)\n   - Debug any communication issues (I2C, SPI, UART)",
+            
+            "🔗 Phase 7: System Integration\n   - Connect all modules to main controller\n   - Test inter-module communication\n   - Implement error handling for failures\n   - Verify complete system functionality",
+            
+            "🐛 Phase 8: Debugging & Optimization\n   - Use Serial Monitor for troubleshooting\n   - Optimize code for memory and speed\n   - Add LED indicators for system states\n   - Test edge cases and error conditions",
+            
+            "📊 Phase 9: Testing & Validation\n   - Create test cases for all features\n   - Measure and record performance metrics\n   - Compare results with initial requirements\n   - Document any limitations or issues",
+            
+            "📦 Phase 10: Enclosure & Finalization\n   - Design enclosure considering ventilation\n   - Add mounting holes for components\n   - Label all external connections\n   - Create user manual with safety warnings",
+            
+            "📝 Phase 11: Documentation\n   - Take high-quality photos of project\n   - Create circuit diagrams and flowcharts\n   - Write detailed project report\n   - Prepare demonstration video",
+            
+            "🎤 Phase 12: Presentation\n   - Prepare PowerPoint/poster for presentation\n   - Practice explaining project working\n   - Demonstrate all features live\n   - Discuss real-world applications and future scope"
         ]
         
         # Adjust steps based on skill level
         if skill_level_lower == "beginner":
-            steps = steps[:7]  # Simpler project
-        elif skill_level_lower == "expert":
-            steps.append("Create detailed technical report")
-            steps.append("Present project findings")
+            steps = steps[:8]  # Focus on fundamentals
+        elif skill_level_lower == "intermediate":
+            steps = steps[:10]
+        # Advanced and expert get all steps
         
-        # Determine cost
-        cost = params.budget if params.budget else config["cost_range"].get(skill_level_lower, "$50-80")
+        # Determine cost with Indian Rupee pricing
+        cost = params.budget if params.budget else config["cost_range"].get(skill_level_lower, "₹1000-1500")
         
-        # Determine time
-        time = params.duration if params.duration else time_estimates.get(skill_level_lower, "2-3 weeks")
+        # Determine time with detailed breakdown
+        time = params.duration if params.duration else time_estimates.get(skill_level_lower, "2-3 weeks (25 hours)")
         
+        # Create project with enhanced data
         project = GeneratedProject(
             title=project_title,
             description=description,
@@ -236,7 +385,7 @@ async def generate_project(params: ProjectParams):
             steps=steps
         )
         
-        logger.info(f"Generated project: {project.title}")
+        logger.info(f"Generated ATAL project: {project.title}")
         return project
         
     except Exception as e:
