@@ -36,7 +36,7 @@ const About: React.FC = () => {
             </CardHeader>
             <CardContent>
               <ul className="flex flex-wrap gap-2 text-sm">
-                {['React', 'TypeScript', 'Python', 'FastAPI', 'Tailwind', 'Firebase'].map((s) => (
+                {['React', 'TypeScript', 'Python', 'FastAPI', 'Tailwind', 'Supabase'].map((s) => (
                   <li key={s} className="px-3 py-1 rounded-full bg-muted">{s}</li>
                 ))}
               </ul>

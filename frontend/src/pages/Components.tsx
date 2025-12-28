@@ -28,30 +28,30 @@ const Components: React.FC = () => {
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
   const [components, setComponents] = useState<Component[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [firebaseConnected, setFirebaseConnected] = useState(false);
+  const [supabaseConnected, setSupabaseConnected] = useState(false);
   const { showPrice } = usePreferences();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [componentToDelete, setComponentToDelete] = useState<{ id: string; name: string } | null>(null);
 
-  // Load components from Firebase with real-time updates
+  // Load components from Supabase with real-time updates
   React.useEffect(() => {
     const unsubscribe = componentService.subscribeToComponents((updatedComponents) => {
       setComponents(updatedComponents);
       setIsLoading(false);
-      setFirebaseConnected(true);
+      setSupabaseConnected(true);
       
-      // Show Firebase connection status
+      // Show Supabase connection status
       if (updatedComponents.length === 0) {
-        console.log('🔥 Firebase connected! No components yet - try adding one.');
+        console.log('✅ Supabase connected! No components yet - try adding one.');
       } else {
-        console.log(`🔥 Firebase connected! Loaded ${updatedComponents.length} components.`);
+        console.log(`✅ Supabase connected! Loaded ${updatedComponents.length} components.`);
       }
     }, category === 'all' ? undefined : category);
 
     return () => unsubscribe();
   }, [category]);
 
-  // Mock data for fallback when Firebase is empty
+  // Mock data for fallback when Supabase is empty
   const mockComponents = [
     {
       id: 1,
@@ -131,7 +131,7 @@ const Components: React.FC = () => {
     'Single Board Computer'
   ];
 
-  // Use Firebase components if available, otherwise use mock data for demo
+  // Use Supabase components if available, otherwise use mock data for demo
   const displayComponents = components.length > 0 ? components : mockComponents;
 
   const filteredComponents = displayComponents.filter(component => {
@@ -175,9 +175,9 @@ const Components: React.FC = () => {
         description={
           <div className="flex items-center gap-2">
             <span>Browse our extensive collection of electronic components for your projects</span>
-            {firebaseConnected && (
+            {supabaseConnected && (
               <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                🔥 Firebase Connected
+                ✅ Supabase Connected
               </Badge>
             )}
           </div>
@@ -248,7 +248,7 @@ const Components: React.FC = () => {
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {filteredComponents.map((component, index) => {
-            // Handle both Firebase and mock data structures
+            // Handle both Supabase and mock data structures
             const Icon = (component as any).icon || CircuitBoard;
             const isInStock = (component as any).inStock !== undefined ? (component as any).inStock : ((component as any).stock === 'In Stock');
             const stockText = (component as any).inStock !== undefined ? ((component as any).inStock ? 'In Stock' : 'Out of Stock') : (component as any).stock;
@@ -297,7 +297,7 @@ const Components: React.FC = () => {
                     )}
                   </div>
                   
-                  {/* Display specifications if available (Firebase data) */}
+                  {/* Display specifications if available (Supabase data) */}
                   {(component as any).specifications && Object.keys((component as any).specifications).length > 0 && (
                     <div className="space-y-2 mb-4">
                       {Object.entries((component as any).specifications).slice(0, 3).map(([key, value]) => (
@@ -340,8 +340,8 @@ const Components: React.FC = () => {
                       View Details
                     </Button>
                     
-                    {/* Only show delete button for Firebase components (they have string IDs) */}
-                    {typeof (component as any).id === 'string' && firebaseConnected && (
+                    {/* Only show delete button for Supabase components (they have string IDs) */}
+                    {typeof (component as any).id === 'string' && supabaseConnected && (
                       <Button 
                         size="icon"
                         variant="ghost"
@@ -364,11 +364,11 @@ const Components: React.FC = () => {
           <div className="text-center py-12">
             <Cpu className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
             <p className="text-xl text-muted-foreground">
-              {components.length === 0 && firebaseConnected ? 'No components in Firebase yet' : 'No components found'}
+              {components.length === 0 && supabaseConnected ? 'No components in database yet' : 'No components found'}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              {components.length === 0 && firebaseConnected 
-                ? 'Click "Add Component" to add your first component to Firebase!' 
+              {components.length === 0 && supabaseConnected 
+                ? 'Click "Add Component" to add your first component to Supabase!' 
                 : 'Try adjusting your search or filters'
               }
             </p>
