@@ -62,21 +62,20 @@ const AddComponentForm: React.FC<AddComponentFormProps> = ({
     setIsLoading(true);
     
     try {
-      // Save to Firebase
+      // Save to Supabase
       await componentService.addComponent({
         name: formData.name,
         description: formData.description,
         category: formData.category,
         price: formData.price,
-        inStock: formData.stock === 'In Stock',
-        stockCount: formData.stock === 'In Stock' ? 10 : 0, // Default stock count
+        stock: formData.stock,
         tags: formData.tags,
         specifications: formData.specifications,
       });
 
       toast({
         title: "Component Added Successfully!",
-        description: `${formData.name} has been added to Firebase and will appear in real-time.`,
+        description: `${formData.name} has been added to Supabase and will appear in real-time.`,
       });
 
       // Reset form
