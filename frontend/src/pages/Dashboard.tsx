@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Zap, BookOpen, Cpu, TrendingUp, Plus, Eye, Trash2 } from 'lucide-react';
+import { LogOut, Zap, BookOpen, Cpu, TrendingUp, Plus, Eye, Trash2, BarChart3, CheckCircle, Clock, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +11,10 @@ import { useAuth } from '@/contexts/AuthContext';
 import { authService } from '@/services/authService';
 import { projectService, type SavedProject } from '@/services/projectService';
 import { toast } from '@/hooks/use-toast';
+import { ProjectStatsCard } from '@/components/dashboard/ProjectStatsCard';
+import { ProjectStatusChart } from '@/components/dashboard/ProjectStatusChart';
+import { ProjectDifficultyChart } from '@/components/dashboard/ProjectDifficultyChart';
+import { ProjectProgressChart } from '@/components/dashboard/ProjectProgressChart';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -158,40 +162,51 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats Cards with Animation */}
         <div className="grid md:grid-cols-4 gap-4 max-w-6xl mx-auto mb-8">
-          <Card className="glass-effect border-border/50">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <p className="text-3xl font-bold text-gradient">{stats.total}</p>
-                <p className="text-sm text-muted-foreground">Total Projects</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="glass-effect border-border/50">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <p className="text-3xl font-bold text-green-500">{stats.completed}</p>
-                <p className="text-sm text-muted-foreground">Completed</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="glass-effect border-border/50">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <p className="text-3xl font-bold text-blue-500">{stats.inProgress}</p>
-                <p className="text-sm text-muted-foreground">In Progress</p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="glass-effect border-border/50">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <p className="text-3xl font-bold text-orange-500">{stats.planning}</p>
-                <p className="text-sm text-muted-foreground">Planning</p>
-              </div>
-            </CardContent>
-          </Card>
+          <ProjectStatsCard
+            title="Total Projects"
+            value={stats.total}
+            icon={BarChart3}
+            colorClass="text-gradient"
+            delay={0}
+          />
+          <ProjectStatsCard
+            title="Completed"
+            value={stats.completed}
+            icon={CheckCircle}
+            colorClass="text-green-500"
+            delay={100}
+          />
+          <ProjectStatsCard
+            title="In Progress"
+            value={stats.inProgress}
+            icon={Clock}
+            colorClass="text-blue-500"
+            delay={200}
+          />
+          <ProjectStatsCard
+            title="Planning"
+            value={stats.planning}
+            icon={Lightbulb}
+            colorClass="text-orange-500"
+            delay={300}
+          />
+        </div>
+
+        {/* Graphs Section */}
+        <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto mb-8">
+          <ProjectStatusChart 
+            stats={{ 
+              completed: stats.completed, 
+              inProgress: stats.inProgress, 
+              planning: stats.planning 
+            }} 
+          />
+          <ProjectDifficultyChart projects={projects} />
+          <div className="md:col-span-2">
+            <ProjectProgressChart projects={projects} />
+          </div>
         </div>
 
         {/* Projects Section */}

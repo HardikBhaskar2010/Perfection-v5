@@ -108,45 +108,36 @@ const Generator: React.FC = () => {
 
     setIsSaving(true);
     try {
-      // Save to localStorage instead of Supabase
-      const existingProjects = localStorage.getItem('user_projects');
-      const projects = existingProjects ? JSON.parse(existingProjects) : [];
-      
-      const newProject = {
-        id: Date.now(), // Use timestamp as ID
+      // Save to Supabase using projectService
+      const savedProject = await projectService.saveProject({
         title: generatedProject.title,
         description: generatedProject.description,
-        status: 'Planning',
-        progress: 0,
-        lastUpdated: 'Just now',
+        project_type: formData.projectType,
         difficulty: generatedProject.difficulty,
-        starred: false,
-        tags: [formData.projectType, generatedProject.difficulty],
-        estimatedTime: generatedProject.estimatedTime,
-        estimatedCost: generatedProject.estimatedCost,
+        estimated_time: generatedProject.estimatedTime,
+        estimated_cost: generatedProject.estimatedCost,
         components: generatedProject.components,
         skills: generatedProject.skills,
         steps: generatedProject.steps,
-        project_type: formData.projectType,
         generated_from_params: formData,
-        created_at: new Date().toISOString(),
-      };
-
-      projects.unshift(newProject); // Add to beginning
-      localStorage.setItem('user_projects', JSON.stringify(projects));
-
-      toast({
-        title: "Project Saved!",
-        description: "Your project has been added to your library.",
       });
-      
-      // Navigate to library to see the saved project
-      navigate('/library');
+
+      if (savedProject) {
+        toast({
+          title: "Project Saved!",
+          description: "Your project has been added to your library.",
+        });
+        
+        // Navigate to library to see the saved project
+        navigate('/library');
+      } else {
+        throw new Error('Failed to save project');
+      }
     } catch (error) {
       console.error('Error saving project:', error);
       toast({
         title: "Error",
-        description: "Failed to save project",
+        description: "Failed to save project. Please try again.",
         variant: "destructive",
       });
     } finally {
