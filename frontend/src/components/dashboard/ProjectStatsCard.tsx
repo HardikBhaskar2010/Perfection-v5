@@ -20,18 +20,18 @@ export const ProjectStatsCard: React.FC<ProjectStatsCardProps> = ({
 }) => {
   return (
     <Card 
-      className="glass-effect border-border/50 animate-fade-in"
+      className="glass-effect border-border/50 animate-fade-in transition-all duration-300 hover:shadow-lg hover:scale-105"
       style={{ animationDelay: `${delay}ms` }}
     >
       <CardContent className="pt-6">
         <div className="text-center">
           {Icon && (
-            <div className="flex justify-center mb-2">
+            <div className="flex justify-center mb-2 transition-transform duration-300 hover:scale-110">
               <Icon className={`w-8 h-8 ${colorClass}`} />
             </div>
           )}
           <p className={`text-3xl font-bold ${colorClass}`}>
-            <CounterAnimation end={value} duration={1500} />
+            <CounterAnimation end={value} duration={2000} />
           </p>
           <p className="text-sm text-muted-foreground mt-1">{title}</p>
         </div>

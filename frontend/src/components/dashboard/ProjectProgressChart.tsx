@@ -55,7 +55,7 @@ export const ProjectProgressChart: React.FC<ProjectProgressChartProps> = ({ proj
   }
 
   return (
-    <Card className="glass-effect border-border/50 animate-fade-in" style={{ animationDelay: '400ms' }}>
+    <Card className="glass-effect border-border/50 animate-fade-in transition-all duration-300 hover:shadow-lg" style={{ animationDelay: '400ms' }}>
       <CardHeader>
         <CardTitle>Project Activity Timeline</CardTitle>
         <CardDescription>Projects created over the last 30 days</CardDescription>
@@ -82,19 +82,23 @@ export const ProjectProgressChart: React.FC<ProjectProgressChartProps> = ({ proj
             />
             <Tooltip 
               contentStyle={{ 
-                backgroundColor: 'rgba(0, 0, 0, 0.8)', 
-                border: '1px solid rgba(139, 92, 246, 0.3)',
-                borderRadius: '8px'
+                backgroundColor: 'rgba(0, 0, 0, 0.9)', 
+                border: '1px solid rgba(139, 92, 246, 0.5)',
+                borderRadius: '8px',
+                padding: '8px 12px'
               }}
+              animationDuration={200}
             />
             <Area 
               type="monotone" 
               dataKey="projects" 
               stroke="#8b5cf6" 
+              strokeWidth={2}
               fillOpacity={1} 
               fill="url(#colorProjects)"
-              animationBegin={0}
+              animationBegin={400}
               animationDuration={1500}
+              animationEasing="ease-out"
             />
           </AreaChart>
         </ResponsiveContainer>
