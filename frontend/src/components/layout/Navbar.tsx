@@ -101,7 +101,7 @@ const Navbar: React.FC = () => {
       className={`
         fixed top-0 left-0 right-0 z-50 transition-all duration-300
         ${isScrolled 
-          ? 'glass-effect border-b border-border backdrop-blur-xl bg-background/80' 
+          ? 'glass-effect border-b border-white/5 backdrop-blur-2xl bg-black/40' 
           : 'bg-transparent'
         }
       `}

@@ -170,63 +170,75 @@ const Components: React.FC = () => {
 
   return (
     <Layout>
-      <PageHeader 
-        title="Component Database"
-        description={
-          <div className="flex items-center gap-2">
-            <span>Browse our extensive collection of electronic components for your projects</span>
-            {supabaseConnected && (
-              <Badge variant="outline" className="bg-green-500/10 text-green-500 border-green-500/20">
-                ✅ Supabase Connected
-              </Badge>
-            )}
+      <div className="relative min-h-screen pt-20">
+        {/* Supabase Connection Status - Sticky Badge */}
+        {supabaseConnected && (
+          <div className="fixed top-24 right-4 z-40 animate-fade-in">
+            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20 backdrop-blur-md px-3 py-1 font-bold">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2 animate-pulse" />
+              Supabase Live
+            </Badge>
           </div>
-        }
-      >
-        <div className="flex justify-center">
-          <div className="p-4 bg-gradient-secondary rounded-2xl shadow-glow-secondary animate-glow-pulse">
-            <CircuitBoard className="w-12 h-12 text-white" />
+        )}
+        <div className="relative mb-12">
+          {/* Ambient background glow */}
+          <div className="absolute top-0 left-1/4 w-72 h-72 bg-secondary/10 rounded-full blur-[100px] pointer-events-none" />
+          
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-secondary">
+                  <CircuitBoard className="w-5 h-5" />
+                  <span className="text-sm font-bold uppercase tracking-widest">Inventory</span>
+                </div>
+                <h1 className="text-4xl md:text-5xl font-black tracking-tight text-gradient">
+                  Component Database
+                </h1>
+                <p className="text-muted-foreground text-lg max-w-lg">
+                  Browse and manage your collection of electronic modules and sensors.
+                </p>
+              </div>
+              
+              <Button 
+                className="bg-gradient-secondary text-white shadow-glow-secondary hover:shadow-glow-lg transition-all duration-300 rounded-xl h-14 px-8 text-lg font-bold"
+                onClick={() => setIsAddFormOpen(true)}
+              >
+                <Plus className="mr-2 h-6 w-6" />
+                Add Module
+              </Button>
+            </div>
           </div>
         </div>
-      </PageHeader>
-      
-      <div className="container mx-auto px-4 py-8">
 
         {/* Search and Filters */}
-        <div className="max-w-6xl mx-auto mb-8">
-          <div className="flex flex-col lg:flex-row gap-4 items-center">
-            <div className="flex flex-col md:flex-row gap-4 flex-1">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                <Input
-                  placeholder="Search components..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
+        <div className="max-w-6xl mx-auto mb-12">
+          <Card className="glass-effect border-white/5 p-4 rounded-2xl">
+            <div className="flex flex-col lg:flex-row gap-4 items-center">
+              <div className="flex flex-col md:flex-row gap-4 flex-1 w-full">
+                <div className="relative flex-1">
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                  <Input
+                    placeholder="Search modules, chips, or specifications..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-12 h-12 rounded-xl border-white/10 bg-white/5 focus:bg-white/10 transition-all"
+                  />
+                </div>
+                <Select value={category} onValueChange={setCategory}>
+                  <SelectTrigger className="w-full md:w-[240px] h-12 rounded-xl border-white/10 bg-white/5">
+                    <Filter className="w-4 h-4 mr-2" />
+                    <SelectValue placeholder="All Categories" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl border-white/10 bg-background/95 backdrop-blur-xl">
+                    <SelectItem value="all">All Categories</SelectItem>
+                    {categories.slice(1).map(cat => (
+                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger className="w-full md:w-[200px]">
-                  <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue placeholder="Category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  {categories.slice(1).map(cat => (
-                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
-            <Button 
-              className="bg-gradient-secondary text-white shadow-glow"
-              ripple={true}
-              onClick={() => setIsAddFormOpen(true)}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Component
-            </Button>
-          </div>
+          </Card>
         </div>
 
         {/* Component Grid */}
@@ -299,11 +311,11 @@ const Components: React.FC = () => {
                   
                   {/* Display specifications if available (Supabase data) */}
                   {(component as any).specifications && Object.keys((component as any).specifications).length > 0 && (
-                    <div className="space-y-2 mb-4">
+                    <div className="space-y-2 mb-4 bg-white/5 p-3 rounded-xl border border-white/5">
                       {Object.entries((component as any).specifications).slice(0, 3).map(([key, value]) => (
-                        <div key={key as string} className="flex justify-between text-sm">
-                          <span className="text-muted-foreground capitalize">{key}:</span>
-                          <span>{value as string}</span>
+                        <div key={key as string} className="flex justify-between text-xs">
+                          <span className="text-muted-foreground font-bold uppercase tracking-tighter">{key}:</span>
+                          <span className="font-medium">{value as string}</span>
                         </div>
                       ))}
                     </div>
@@ -311,24 +323,19 @@ const Components: React.FC = () => {
                   
                   {/* Display tags */}
                   {(component as any).tags && (component as any).tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mb-4">
+                    <div className="flex flex-wrap gap-1.5 mb-6">
                       {(component as any).tags.slice(0, 3).map((tag: string) => (
-                        <Badge key={tag} variant="outline" className="text-xs">
+                        <Badge key={tag} variant="outline" className="text-[10px] font-bold uppercase tracking-tight bg-secondary/10 text-secondary border-secondary/20">
                           {tag}
                         </Badge>
                       ))}
-                      {(component as any).tags.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{(component as any).tags.length - 3}
-                        </Badge>
-                      )}
                     </div>
                   )}
                   
                   {/* Action Buttons */}
                   <div className="flex gap-2">
                     <Button 
-                      className="flex-1 bg-gradient-primary text-white"
+                      className="flex-1 bg-gradient-primary text-white rounded-xl font-bold shadow-glow"
                       ripple={true}
                       onClick={() => {
                         toast({
@@ -337,7 +344,7 @@ const Components: React.FC = () => {
                         });
                       }}
                     >
-                      View Details
+                      Explore Details
                     </Button>
                     
                     {/* Only show delete button for Supabase components (they have string IDs) */}
