@@ -38,3 +38,9 @@ externalPort = 80
 deploymentTarget = "static"
 build = ["npm", "run", "build", "--prefix", "frontend"]
 publicDir = "frontend/dist"
+
+[userenv]
+
+[userenv.shared]
+VITE_EMAILJS_SERVICE_ID = "service_gnbgokw"
+VITE_EMAILJS_PUBLIC_KEY = "1w-UAXGYrlhwiGirV"
