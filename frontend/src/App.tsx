@@ -18,15 +18,13 @@ import WelcomeTour from "@/components/tutorial/WelcomeTour";
 import { PerfPromptBanner } from "@/components/ui/perf-prompt-banner";
 
 // Lazy load page components
-const Home = React.lazy(() => import("./pages/Home"));
+const Dashboard = React.lazy(() => import("./pages/Dashboard"));
 const Generator = React.lazy(() => import("./pages/Generator"));
 const Components = React.lazy(() => import("./pages/Components"));
 const Library = React.lazy(() => import("./pages/Library"));
 const Learn = React.lazy(() => import("./pages/Learn"));
 const Profile = React.lazy(() => import("./pages/Profile"));
 const About = React.lazy(() => import("./pages/About"));
-const Login = React.lazy(() => import("./pages/Login"));
-const SignUp = React.lazy(() => import("./pages/SignUp"));
 const ProjectDetail = React.lazy(() => import("./pages/ProjectDetail"));
 const ComponentComparison = React.lazy(() => import("./pages/ComponentComparison"));
 const AuthCallback = React.lazy(() => import("./pages/AuthCallback"));
@@ -59,9 +57,7 @@ const App = () => (
                     <PerfPromptBanner />
                     <Suspense fallback={<PageLoading />}>
                       <Routes>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/signup" element={<SignUp />} />
+                        <Route path="/" element={<Dashboard />} />
                         <Route path="/auth/callback" element={<AuthCallback />} />
                         <Route path="/project/:id" element={<ProjectDetail />} />
                         <Route path="/generator" element={<Generator />} />

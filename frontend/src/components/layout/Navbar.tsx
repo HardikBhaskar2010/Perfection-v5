@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Zap, Cpu, BookOpen, User, Home, Info, GraduationCap } from 'lucide-react';
+import { Menu, X, Zap, Cpu, BookOpen, Home, Info, GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useHoverAnimation } from '@/hooks/useHoverAnimation';
 import { useMicroInteraction } from '@/hooks/useMicroInteraction';
@@ -29,13 +29,12 @@ const Navbar: React.FC = () => {
   });
 
   const navItems = [
-    { path: '/', label: 'Home', icon: Home },
+    { path: '/', label: 'Dashboard', icon: Home },
     { path: '/generator', label: 'Generator', icon: Zap },
     { path: '/components', label: 'Components', icon: Cpu },
     { path: '/library', label: 'Library', icon: BookOpen },
     { path: '/learn', label: 'Learn', icon: GraduationCap },
     { path: '/about', label: 'About', icon: Info },
-    { path: '/profile', label: 'Profile', icon: User },
   ];
 
   const isActive = (path: string) => location.pathname === path;
