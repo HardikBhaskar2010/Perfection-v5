@@ -140,6 +140,60 @@ const About: React.FC = () => {
                 ))}
               </div>
             </div>
+            <div className="space-y-8 pb-20">
+              <div className="flex items-center justify-between px-2">
+                <h2 className="text-3xl font-black tracking-tight text-gradient">System Feedback</h2>
+                <div className="h-px flex-1 bg-border/40 mx-8 hidden md:block" />
+              </div>
+              
+              <Card className="glass-effect border-primary/10 overflow-hidden relative">
+                <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+                  <Rocket className="w-24 h-24 text-primary" />
+                </div>
+                <CardHeader className="p-8">
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-black">Share Your Synthesis</h3>
+                    <p className="text-sm font-medium text-muted-foreground/80 leading-relaxed max-w-xl">
+                      Help us refine the project engine. Whether it's a bug in the generator or a suggestion for a new learning module, your feedback fuels our innovation.
+                    </p>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-8 pt-0">
+                  <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); }}>
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Identity</label>
+                        <input 
+                          type="text" 
+                          placeholder="Explorer Name" 
+                          className="w-full bg-muted/30 border border-primary/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary/40 transition-colors"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Protocol</label>
+                        <select className="w-full bg-muted/30 border border-primary/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary/40 transition-colors appearance-none">
+                          <option>Feature Request</option>
+                          <option>Bug Report</option>
+                          <option>Module Suggestion</option>
+                          <option>General Transmission</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Message Transmission</label>
+                      <textarea 
+                        placeholder="What's on your mind?..." 
+                        rows={4}
+                        className="w-full bg-muted/30 border border-primary/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary/40 transition-colors resize-none"
+                      />
+                    </div>
+                    <Button className="bg-gradient-primary text-white rounded-xl px-8 h-12 font-bold shadow-glow hover:shadow-glow-lg transition-all">
+                      Dispatch Feedback
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </div>
