@@ -1,6 +1,4 @@
 import * as React from "react";
-import { useScrollAnimation } from "@/hooks/useScrollAnimation";
-import { useHoverAnimation } from "@/hooks/useHoverAnimation";
 import { cn } from "@/lib/utils";
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -10,40 +8,10 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const Card = React.forwardRef<HTMLDivElement, CardProps>(
-  ({ className, enableAnimation = true, enableHover = false, animationDelay = 0, ...props }, ref) => {
-    const scrollRef = useScrollAnimation<HTMLDivElement>({ 
-      animation: 'fadeIn', 
-      delay: animationDelay,
-      triggerOnce: true 
-    });
-    
-    const hoverRef = useHoverAnimation<HTMLDivElement>({ 
-      scale: 1.02, 
-      lift: 4, 
-      glow: false,
-      duration: 200 
-    });
-
-    // Combine refs
-    const combinedRef = React.useCallback((node: HTMLDivElement) => {
-      if (ref) {
-        if (typeof ref === 'function') {
-          ref(node);
-        } else {
-          ref.current = node;
-        }
-      }
-      if (enableAnimation && scrollRef.ref.current !== node) {
-        scrollRef.ref.current = node;
-      }
-      if (enableHover && hoverRef.current !== node) {
-        hoverRef.current = node;
-      }
-    }, [ref, scrollRef.ref, hoverRef, enableAnimation, enableHover]);
-
+  ({ className, enableAnimation: _enableAnimation = true, enableHover = false, animationDelay: _animationDelay = 0, ...props }, ref) => {
     return (
       <div 
-        ref={combinedRef} 
+        ref={ref} 
         className={cn(
           "rounded-lg border bg-card text-card-foreground shadow-sm",
           enableHover && "cursor-pointer transition-shadow duration-200",

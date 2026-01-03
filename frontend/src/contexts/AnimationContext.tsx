@@ -28,7 +28,6 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({
   const [isReducedMotion, setIsReducedMotion] = useState(prefersReducedMotion());
   const [isAnimationEnabled, setIsAnimationEnabled] = useState(true);
 
-  // Listen for changes in reduced motion preference
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     
@@ -42,7 +41,6 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({
 
     mediaQuery.addEventListener('change', handleChange);
     
-    // Set initial state
     setIsReducedMotion(mediaQuery.matches);
     setConfig(prev => ({
       ...prev,
@@ -84,12 +82,17 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({
 export const useAnimation = (): AnimationContextType => {
   const context = useContext(AnimationContext);
   if (context === undefined) {
-    throw new Error('useAnimation must be used within an AnimationProvider');
+    return {
+      config: { ...DEFAULT_ANIMATION_CONFIG, reducedMotion: true },
+      updateConfig: () => {},
+      isReducedMotion: true,
+      isAnimationEnabled: false,
+      toggleAnimations: () => {},
+    };
   }
   return context;
 };
 
-// Hook for getting animation-ready configuration
 export const useAnimationConfig = () => {
   const { config } = useAnimation();
   return config;
