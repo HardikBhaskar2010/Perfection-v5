@@ -170,14 +170,23 @@ const About: React.FC = () => {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Protocol</label>
-                        <select className="w-full bg-muted/30 border border-primary/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary/40 transition-colors appearance-none">
-                          <option>Feature Request</option>
-                          <option>Bug Report</option>
-                          <option>Module Suggestion</option>
-                          <option>General Transmission</option>
-                        </select>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Email Communication</label>
+                        <input 
+                          type="email" 
+                          placeholder="explorer@synthesis.hub" 
+                          required
+                          className="w-full bg-muted/30 border border-primary/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary/40 transition-colors"
+                        />
                       </div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Protocol</label>
+                      <select className="w-full bg-muted/30 border border-primary/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary/40 transition-colors appearance-none">
+                        <option>Feature Request</option>
+                        <option>Bug Report</option>
+                        <option>Module Suggestion</option>
+                        <option>General Transmission</option>
+                      </select>
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Message Transmission</label>
