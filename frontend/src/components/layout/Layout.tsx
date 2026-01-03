@@ -12,13 +12,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const showFooter = !pathname.startsWith('/about');
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Animated background gradient */}
       <div className="fixed inset-0 bg-gradient-hero opacity-5 animate-gradient-shift pointer-events-none" />
       
       <Navbar />
       
-      <main className="relative pt-16">
+      <main className="relative pt-16 flex-1">
         {children}
       </main>
 

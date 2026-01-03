@@ -177,7 +177,7 @@ const Generator: React.FC = () => {
               </div>
             </div>
 
-            <div className="grid lg:grid-cols-12 gap-8">
+            <div className="grid lg:grid-cols-12 gap-8 items-start">
               {/* Input Form */}
               <div className="lg:col-span-5">
                 <Card 
@@ -297,10 +297,9 @@ const Generator: React.FC = () => {
                 </Card>
               </div>
 
-              {/* Generated Project */}
-              <div className="lg:col-span-7">
+              <div className="lg:col-span-7 h-[calc(100vh-12rem)] sticky top-24">
                 <div ref={resultCardRef.ref} className="h-full">
-                  <CapsuleAnimation isOpen={isSynthesized}>
+                  <CapsuleAnimation isOpen={isSynthesized} className="h-full">
                     {generatedProject && (
                       <Card className="glass-effect border-primary/10 shadow-md h-full flex flex-col overflow-hidden">
                         <div className="bg-gradient-to-r from-primary/10 to-transparent p-8 border-b border-primary/10">
