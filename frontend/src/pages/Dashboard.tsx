@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Zap, BookOpen, Cpu, TrendingUp, Plus, Eye, Trash2, BarChart3, CheckCircle, Clock, Lightbulb } from 'lucide-react';
+import { Zap, BookOpen, TrendingUp, Plus, Eye, Trash2, BarChart3, CheckCircle, Clock, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,11 +12,10 @@ import { toast } from '@/hooks/use-toast';
 import { ProjectStatsCard } from '@/components/dashboard/ProjectStatsCard';
 import { ProjectStatusChart } from '@/components/dashboard/ProjectStatusChart';
 import { ProjectDifficultyChart } from '@/components/dashboard/ProjectDifficultyChart';
-import { ProjectProgressChart } from '@/components/dashboard/ProjectProgressChart';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user: _user } = useAuth();
   const [projects, setProjects] = useState<SavedProject[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
@@ -107,7 +106,7 @@ const Dashboard: React.FC = () => {
               </div>
               <Button
                 size="lg"
-                className="bg-gradient-primary text-white shadow-glow hover:shadow-glow-lg transition-all duration-300 rounded-full px-8 h-14"
+                className="w-full md:w-auto bg-gradient-primary text-white shadow-glow hover:shadow-glow-lg transition-all duration-300 rounded-full px-8 h-14"
                 onClick={() => navigate('/generator')}
               >
                 <Plus className="w-5 h-5 mr-2" />
@@ -116,7 +115,7 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Stats Cards Section */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-12">
               <ProjectStatsCard
                 title="Total Projects"
                 value={stats.total}
@@ -239,11 +238,11 @@ const Dashboard: React.FC = () => {
                               <div className="flex items-center gap-6 pt-2 text-xs text-muted-foreground">
                                 <div className="flex items-center gap-1.5">
                                   <Clock className="w-3.5 h-3.5" />
-                                  <span>{project.estimated_time}</span>
+                                  <span>{project.estimatedTime || project.estimated_time}</span>
                                 </div>
                                 <div className="flex items-center gap-1.5">
                                   <Zap className="w-3.5 h-3.5" />
-                                  <span>{project.estimated_cost}</span>
+                                  <span>{project.estimatedCost || project.estimated_cost}</span>
                                 </div>
                               </div>
                             </div>

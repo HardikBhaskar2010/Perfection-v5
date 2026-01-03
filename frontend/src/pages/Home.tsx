@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Zap, Cpu, BookOpen, ArrowRight, Sparkles, Rocket, Brain, LogOut, TrendingUp, Plus, Eye, Trash2 } from 'lucide-react';
+import { Zap, Cpu, BookOpen, ArrowRight, Sparkles, Rocket, Brain, LogOut, Plus, Eye, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import Layout from '@/components/layout/Layout';
-import PageHeader from '@/components/layout/PageHeader';
 import { useTutorial } from '@/contexts/TutorialContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { authService } from '@/services/authService';
@@ -16,7 +15,7 @@ import { toast } from '@/hooks/use-toast';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
-  const { user, mode, isLoading: authLoading, isGuest } = useAuth();
+  const { mode, isLoading: authLoading } = useAuth();
   const { tutorialState, startWelcomeTour } = useTutorial();
 
   // Dashboard state
@@ -47,6 +46,7 @@ const Home: React.FC = () => {
     if (showDashboard) {
       loadProjects();
     }
+    return undefined;
   }, [showDashboard]);
 
   // Start welcome tour on first visit (Landing view only)
@@ -175,10 +175,10 @@ const Home: React.FC = () => {
                     Welcome back! Here's an overview of your STEM innovation projects.
                   </p>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 w-full md:w-auto">
                   <Button
                     size="lg"
-                    className="bg-gradient-primary text-white shadow-glow hover:shadow-glow-lg transition-all duration-300 rounded-full px-8 h-14"
+                    className="flex-1 md:flex-none bg-gradient-primary text-white shadow-glow hover:shadow-glow-lg transition-all duration-300 rounded-full px-8 h-14"
                     onClick={() => navigate('/generator')}
                   >
                     <Plus className="w-5 h-5 mr-2" />
@@ -197,7 +197,7 @@ const Home: React.FC = () => {
               </div>
 
               {/* Stats Cards */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-12">
                 <Card className="glass-effect border-primary/10 shadow-sm hover:shadow-md transition-all duration-300">
                   <CardContent className="pt-6">
                     <div className="text-center">

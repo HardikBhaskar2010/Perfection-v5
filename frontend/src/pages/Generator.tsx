@@ -332,7 +332,7 @@ const Generator: React.FC = () => {
                           </p>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                           <div className="space-y-1.5">
                             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Difficulty</span>
                             <div className="flex items-center gap-2">
@@ -357,7 +357,7 @@ const Generator: React.FC = () => {
                           </div>
                         </div>
 
-                        <div className="grid md:grid-cols-2 gap-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                           <div className="space-y-4">
                             <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground border-l-2 border-primary pl-3">BOM (Bill of Materials)</h4>
                             <div className="flex flex-wrap gap-2">

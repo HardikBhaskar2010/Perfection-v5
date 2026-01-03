@@ -1,8 +1,8 @@
 import React from 'react';
 import Layout from '@/components/layout/Layout';
-import PageHeader from '@/components/layout/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Link } from 'react-router-dom';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { ExternalLink, Github, Rocket, Gamepad2, Code2 } from 'lucide-react';
 
 const About: React.FC = () => {

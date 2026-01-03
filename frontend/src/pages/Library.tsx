@@ -121,7 +121,7 @@ const Library: React.FC = () => {
               </div>
               <Button 
                 size="lg"
-                className="bg-gradient-primary text-white shadow-glow hover:shadow-glow-lg transition-all duration-300 rounded-full px-8 h-14"
+                className="w-full md:w-auto bg-gradient-primary text-white shadow-glow hover:shadow-glow-lg transition-all duration-300 rounded-full px-8 h-14"
                 ripple={true}
                 onClick={() => navigate('/generator')}
               >
@@ -131,14 +131,14 @@ const Library: React.FC = () => {
             </div>
             
             {/* Actions Bar */}
-            <div className="mb-10">
+            <div className="mb-10 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="bg-muted/50 p-1 rounded-xl">
-                  <TabsList className="bg-transparent border-none">
-                    <TabsTrigger value="all" className="rounded-lg px-6">All Files</TabsTrigger>
-                    <TabsTrigger value="starred" className="rounded-lg px-6">Favorites</TabsTrigger>
-                    <TabsTrigger value="in-progress" className="rounded-lg px-6">Active</TabsTrigger>
-                    <TabsTrigger value="completed" className="rounded-lg px-6">Finished</TabsTrigger>
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="bg-muted/50 p-1 rounded-xl w-full sm:w-auto">
+                  <TabsList className="bg-transparent border-none flex w-full sm:w-auto">
+                    <TabsTrigger value="all" className="rounded-lg px-6 flex-1 sm:flex-none">All Files</TabsTrigger>
+                    <TabsTrigger value="starred" className="rounded-lg px-6 flex-1 sm:flex-none">Favorites</TabsTrigger>
+                    <TabsTrigger value="in-progress" className="rounded-lg px-6 flex-1 sm:flex-none">Active</TabsTrigger>
+                    <TabsTrigger value="completed" className="rounded-lg px-6 flex-1 sm:flex-none">Finished</TabsTrigger>
                   </TabsList>
                 </Tabs>
               </div>
@@ -146,7 +146,7 @@ const Library: React.FC = () => {
 
             {/* Projects Grid */}
             {filteredProjects.length > 0 ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {filteredProjects.map((project, index) => (
                   <Card 
                     key={project.id}
