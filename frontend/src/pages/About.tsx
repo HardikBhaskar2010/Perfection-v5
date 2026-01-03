@@ -1,11 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { ExternalLink, Github, Rocket, Gamepad2, Code2 } from 'lucide-react';
+import { ExternalLink, Github, Rocket, Gamepad2, Code2, Loader2, CheckCircle2 } from 'lucide-react';
+import { sendFeedback } from '@/services/emailService';
+import { toast } from '@/hooks/use-toast';
 
 const About: React.FC = () => {
+  const [isSending, setIsSending] = useState(false);
+  const [isSent, setIsSent] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    protocol: 'Feature Request',
+    message: ''
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSending(true);
+    
+    try {
+      await sendFeedback(formData);
+      setIsSent(true);
+      toast({
+        title: "Transmission Received",
+        description: "Your feedback has been dispatched to the core team.",
+      });
+      // Reset form after success
+      setFormData({ name: '', email: '', protocol: 'Feature Request', message: '' });
+      setTimeout(() => setIsSent(false), 5000);
+    } catch (error) {
+      toast({
+        title: "Transmission Failed",
+        description: "Unable to send feedback. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSending(false);
+    }
+  };
   const projects = [
     { name: 'ATAL Idea Generator', url: 'https://github.com/HardikBhaskar2010/atal_idea_generator', why: 'Arduino brainstorming and organization — making creativity accessible.' },
     { name: 'Calcu', url: 'https://github.com/HardikBhaskar2010/Calcu', why: 'A simple, user-friendly calculator app.' },
@@ -159,13 +194,16 @@ const About: React.FC = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="p-8 pt-0">
-                  <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); }}>
+                  <form className="space-y-6" onSubmit={handleSubmit}>
                     <div className="grid md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Identity</label>
                         <input 
                           type="text" 
                           placeholder="Explorer Name" 
+                          required
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                           className="w-full bg-muted/30 border border-primary/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary/40 transition-colors"
                         />
                       </div>
@@ -175,13 +213,19 @@ const About: React.FC = () => {
                           type="email" 
                           placeholder="explorer@synthesis.hub" 
                           required
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           className="w-full bg-muted/30 border border-primary/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary/40 transition-colors"
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-1">Protocol</label>
-                      <select className="w-full bg-muted/30 border border-primary/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary/40 transition-colors appearance-none">
+                      <select 
+                        className="w-full bg-muted/30 border border-primary/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary/40 transition-colors appearance-none cursor-pointer"
+                        value={formData.protocol}
+                        onChange={(e) => setFormData({ ...formData, protocol: e.target.value })}
+                      >
                         <option>Feature Request</option>
                         <option>Bug Report</option>
                         <option>Module Suggestion</option>
@@ -193,11 +237,29 @@ const About: React.FC = () => {
                       <textarea 
                         placeholder="What's on your mind?..." 
                         rows={4}
+                        required
+                        value={formData.message}
+                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                         className="w-full bg-muted/30 border border-primary/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary/40 transition-colors resize-none"
                       />
                     </div>
-                    <Button className="bg-gradient-primary text-white rounded-xl px-8 h-12 font-bold shadow-glow hover:shadow-glow-lg transition-all">
-                      Dispatch Feedback
+                    <Button 
+                      disabled={isSending || isSent}
+                      className="bg-gradient-primary text-white rounded-xl px-8 h-12 font-bold shadow-glow hover:shadow-glow-lg transition-all min-w-[180px]"
+                    >
+                      {isSending ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Dispatching...
+                        </>
+                      ) : isSent ? (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 mr-2" />
+                          Dispatched
+                        </>
+                      ) : (
+                        'Dispatch Feedback'
+                      )}
                     </Button>
                   </form>
                 </CardContent>
