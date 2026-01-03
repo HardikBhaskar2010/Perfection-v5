@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Zap, Loader2, RefreshCw, Save, Lightbulb, Target, Users, CheckCircle2, XCircle } from 'lucide-react';
+import { Zap, Loader2, Save, Target, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import Layout from '@/components/layout/Layout';
-import PageHeader from '@/components/layout/PageHeader';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { HelpTooltip } from '@/components/ui/enhanced-tooltip';
 import { toast } from '@/hooks/use-toast';
@@ -20,7 +19,7 @@ import PageTutorial from '@/components/tutorial/PageTutorial';
 import { generatorTutorialSteps } from '@/config/tutorialSteps';
 
 const Generator: React.FC = () => {
-  const { user, isLoading: authLoading } = useAuth();
+  const { isLoading: _authLoading } = useAuth();
   const navigate = useNavigate();
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -119,7 +118,7 @@ const Generator: React.FC = () => {
         components: generatedProject.components,
         skills: generatedProject.skills,
         steps: generatedProject.steps,
-        generated_from_params: formData,
+        generated_from_params: formData as unknown as Record<string, string>,
       });
 
       if (savedProject) {

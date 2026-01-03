@@ -46,7 +46,6 @@ const Home: React.FC = () => {
     if (showDashboard) {
       loadProjects();
     }
-    return undefined;
   }, [showDashboard]);
 
   // Start welcome tour on first visit (Landing view only)
