@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Layout from '@/components/layout/Layout';
 import { useAuth } from '@/contexts/AuthContext';
+import { CommandCenterTitle } from '@/components/dashboard/CommandCenterTitle';
 import { projectService, type SavedProject } from '@/services/projectService';
 import { toast } from '@/hooks/use-toast';
 import { ProjectStatsCard } from '@/components/dashboard/ProjectStatsCard';
