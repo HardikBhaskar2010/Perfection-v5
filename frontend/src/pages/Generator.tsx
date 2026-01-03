@@ -17,12 +17,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import PageTutorial from '@/components/tutorial/PageTutorial';
 import { generatorTutorialSteps } from '@/config/tutorialSteps';
+import { CapsuleAnimation } from '@/components/ui/capsule-animation';
 
 const Generator: React.FC = () => {
   const { isLoading: _authLoading } = useAuth();
   const navigate = useNavigate();
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSynthesized, setIsSynthesized] = useState(false);
   const [backendStatus, setBackendStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking');
   const [generatedProject, setGeneratedProject] = useState<{
     title: string;
@@ -73,12 +75,14 @@ const Generator: React.FC = () => {
     }
 
     setIsGenerating(true);
+    setIsSynthesized(false);
     
     try {
       // Call the API service to generate project
       const project = await generateProject(formData);
       
       setGeneratedProject(project);
+      setIsSynthesized(true);
       toast({
         title: "Project Generated!",
         description: "Your personalized STEM project is ready.",
@@ -296,135 +300,119 @@ const Generator: React.FC = () => {
               {/* Generated Project */}
               <div className="lg:col-span-7">
                 <div ref={resultCardRef.ref} className="h-full">
-                  {generatedProject ? (
-                    <Card className="glass-effect border-primary/10 shadow-md h-full flex flex-col overflow-hidden">
-                      <div className="bg-gradient-to-r from-primary/10 to-transparent p-8 border-b border-primary/10">
-                        <div className="flex justify-between items-start">
-                          <div className="space-y-2">
-                            <Badge className="bg-primary/20 text-primary border-primary/20 hover:bg-primary/30 rounded-lg px-3 mb-2">
-                              {formData.projectType.toUpperCase()}
-                            </Badge>
-                            <h2 className="text-3xl font-black text-gradient leading-tight">
-                              {generatedProject.title}
-                            </h2>
-                          </div>
-                          <div className="flex gap-2">
-                            <Button
-                              onClick={handleSaveProject}
-                              disabled={isSaving}
-                              size="lg"
-                              className="bg-primary text-white rounded-xl h-12 px-6 shadow-sm hover:shadow-md transition-all"
-                              data-tutorial="save-button"
-                            >
-                              {isSaving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5 mr-2" />}
-                              {isSaving ? 'Saving...' : 'Save Lab'}
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-
-                      <CardContent className="p-8 space-y-10 flex-1 overflow-y-auto">
-                        <div className="space-y-4">
-                          <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground border-l-2 border-primary pl-3">Executive Summary</h4>
-                          <p className="text-lg leading-relaxed text-foreground/80">
-                            {generatedProject.description}
-                          </p>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                          <div className="space-y-1.5">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Difficulty</span>
-                            <div className="flex items-center gap-2">
-                              <Badge variant="secondary" className="bg-sky-500/10 text-sky-500 border-sky-500/20 px-2.5 py-1 text-sm font-bold uppercase">
-                                {generatedProject.difficulty}
+                  <CapsuleAnimation isOpen={isSynthesized}>
+                    {generatedProject && (
+                      <Card className="glass-effect border-primary/10 shadow-md h-full flex flex-col overflow-hidden">
+                        <div className="bg-gradient-to-r from-primary/10 to-transparent p-8 border-b border-primary/10">
+                          <div className="flex justify-between items-start">
+                            <div className="space-y-2">
+                              <Badge className="bg-primary/20 text-primary border-primary/20 hover:bg-primary/30 rounded-lg px-3 mb-2">
+                                {formData.projectType.toUpperCase()}
                               </Badge>
+                              <h2 className="text-3xl font-black text-gradient leading-tight">
+                                {generatedProject.title}
+                              </h2>
                             </div>
-                          </div>
-                          <div className="space-y-1.5">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Timeline</span>
-                            <div className="flex items-center gap-2">
-                              <Clock className="w-4 h-4 text-primary" />
-                              <span className="text-sm font-bold">{generatedProject.estimatedTime}</span>
-                            </div>
-                          </div>
-                          <div className="space-y-1.5">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Budget</span>
-                            <div className="flex items-center gap-2">
-                              <Zap className="w-4 h-4 text-amber-500" />
-                              <span className="text-sm font-bold">{generatedProject.estimatedCost}</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                          <div className="space-y-4">
-                            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground border-l-2 border-primary pl-3">BOM (Bill of Materials)</h4>
-                            <div className="flex flex-wrap gap-2">
-                              {generatedProject.components.map((component: string, index: number) => (
-                                <Badge 
-                                  key={index}
-                                  variant="outline"
-                                  className="rounded-lg py-1.5 px-3 border-primary/10 bg-primary/5 text-primary-foreground/90 font-medium"
-                                >
-                                  {component}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="space-y-4">
-                            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground border-l-2 border-secondary pl-3">Learning Outcomes</h4>
-                            <div className="flex flex-wrap gap-2">
-                              {generatedProject.skills.map((skill: string, index: number) => (
-                                <Badge 
-                                  key={index}
-                                  className="rounded-lg py-1.5 px-3 bg-secondary/10 text-secondary hover:bg-secondary/20 border-none font-medium"
-                                >
-                                  {skill}
-                                </Badge>
-                              ))}
+                            <div className="flex gap-2">
+                              <Button
+                                onClick={handleSaveProject}
+                                disabled={isSaving}
+                                size="lg"
+                                className="bg-primary text-white rounded-xl h-12 px-6 shadow-sm hover:shadow-md transition-all"
+                                data-tutorial="save-button"
+                              >
+                                {isSaving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5 mr-2" />}
+                                {isSaving ? 'Saving...' : 'Save Lab'}
+                              </Button>
                             </div>
                           </div>
                         </div>
 
-                        <div className="space-y-6 pt-4">
-                          <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground border-l-2 border-accent pl-3">Implementation Roadmap</h4>
+                        <CardContent className="p-8 space-y-10 flex-1 overflow-y-auto">
                           <div className="space-y-4">
-                            {generatedProject.steps.map((step: string, index: number) => (
-                              <div key={index} className="flex gap-4 group">
-                                <span className="flex-shrink-0 w-8 h-8 rounded-full bg-muted group-hover:bg-primary/20 group-hover:text-primary transition-colors flex items-center justify-center text-xs font-black">
-                                  {String(index + 1).padStart(2, '0')}
-                                </span>
-                                <div className="space-y-1">
-                                  <p className="text-sm leading-relaxed text-foreground/90 group-hover:text-foreground transition-colors">
-                                    {step}
-                                  </p>
-                                </div>
+                            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground border-l-2 border-primary pl-3">Executive Summary</h4>
+                            <p className="text-lg leading-relaxed text-foreground/80">
+                              {generatedProject.description}
+                            </p>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            <div className="space-y-1.5">
+                              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Difficulty</span>
+                              <div className="flex items-center gap-2">
+                                <Badge variant="secondary" className="bg-sky-500/10 text-sky-500 border-sky-500/20 px-2.5 py-1 text-sm font-bold uppercase">
+                                  {generatedProject.difficulty}
+                                </Badge>
                               </div>
-                            ))}
+                            </div>
+                            <div className="space-y-1.5">
+                              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Timeline</span>
+                              <div className="flex items-center gap-2">
+                                <Clock className="w-4 h-4 text-primary" />
+                                <span className="text-sm font-bold">{generatedProject.estimatedTime}</span>
+                              </div>
+                            </div>
+                            <div className="space-y-1.5">
+                              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Budget</span>
+                              <div className="flex items-center gap-2">
+                                <Zap className="w-4 h-4 text-amber-500" />
+                                <span className="text-sm font-bold">{generatedProject.estimatedCost}</span>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ) : (
-                    <Card className="glass-effect border-dashed border-primary/20 h-full flex flex-col items-center justify-center min-h-[500px] p-12 text-center group">
-                      <div className="relative">
-                        <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 group-hover:scale-175 transition-transform duration-700" />
-                        <div className="relative w-24 h-24 bg-background/80 rounded-3xl flex items-center justify-center border border-primary/20 shadow-xl mb-8 group-hover:-rotate-6 transition-transform">
-                          <Zap className="w-12 h-12 text-primary animate-pulse" />
-                        </div>
-                      </div>
-                      <h3 className="text-2xl font-black mb-3 text-gradient">System Idle</h3>
-                      <p className="text-muted-foreground max-w-sm mx-auto leading-relaxed">
-                        Specify your project parameters on the left to initialize the neural generation engine.
-                      </p>
-                      <div className="mt-8 flex gap-2">
-                        {[1, 2, 3].map(i => (
-                          <div key={i} className="w-1.5 h-1.5 rounded-full bg-primary/30 animate-bounce" style={{ animationDelay: `${i * 0.2}s` }} />
-                        ))}
-                      </div>
-                    </Card>
-                  )}
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div className="space-y-4">
+                              <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground border-l-2 border-primary pl-3">BOM (Bill of Materials)</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {generatedProject.components.map((component: string, index: number) => (
+                                  <Badge 
+                                    key={index}
+                                    variant="outline"
+                                    className="rounded-lg py-1.5 px-3 border-primary/10 bg-primary/5 text-primary-foreground/90 font-medium"
+                                  >
+                                    {component}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="space-y-4">
+                              <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground border-l-2 border-secondary pl-3">Learning Outcomes</h4>
+                              <div className="flex flex-wrap gap-2">
+                                {generatedProject.skills.map((skill: string, index: number) => (
+                                  <Badge 
+                                    key={index}
+                                    className="rounded-lg py-1.5 px-3 bg-secondary/10 text-secondary hover:bg-secondary/20 border-none font-medium"
+                                  >
+                                    {skill}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="space-y-6 pt-4">
+                            <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground border-l-2 border-accent pl-3">Implementation Roadmap</h4>
+                            <div className="space-y-4">
+                              {generatedProject.steps.map((step: string, index: number) => (
+                                <div key={index} className="flex gap-4 group">
+                                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-muted group-hover:bg-primary/20 group-hover:text-primary transition-colors flex items-center justify-center text-xs font-black">
+                                    {String(index + 1).padStart(2, '0')}
+                                  </span>
+                                  <div className="space-y-1">
+                                    <p className="text-sm leading-relaxed text-foreground/90 group-hover:text-foreground transition-colors">
+                                      {step}
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </CapsuleAnimation>
                 </div>
               </div>
             </div>
