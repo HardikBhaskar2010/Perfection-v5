@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Layout from '@/components/layout/Layout';
 import { useAuth } from '@/contexts/AuthContext';
-import { CommandCenterTitle } from '@/components/dashboard/CommandCenterTitle';
 import { projectService, type SavedProject } from '@/services/projectService';
 import { toast } from '@/hooks/use-toast';
 import { ProjectStatsCard } from '@/components/dashboard/ProjectStatsCard';
@@ -84,9 +83,29 @@ const Dashboard: React.FC = () => {
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="container mx-auto px-4 pb-20">
-          {/* Centralized Command Center Header */}
-          <div className="max-w-6xl mx-auto mb-16">
-            <CommandCenterTitle />
+          {/* Header Section */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-primary">
+                <TrendingUp className="w-5 h-5" />
+                <span className="text-sm font-bold uppercase tracking-widest">Workspace</span>
+              </div>
+              <h1 className="text-4xl md:text-5xl font-black tracking-tight text-gradient">
+                Command Center
+              </h1>
+              <p className="text-muted-foreground text-lg max-w-lg">
+                Manage your synthesis modules and track your innovation progress.
+              </p>
+            </div>
+            
+            <Button 
+              size="lg"
+              onClick={() => navigate('/generator')}
+              className="bg-gradient-primary text-white shadow-glow hover:shadow-glow-lg transition-all duration-300 rounded-xl h-14 px-8 text-lg font-bold"
+            >
+              <Plus className="w-6 h-6 mr-2" />
+              New Synthesis
+            </Button>
           </div>
 
           {/* Stats Grid */}
