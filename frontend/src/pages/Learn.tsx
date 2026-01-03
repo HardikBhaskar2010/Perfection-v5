@@ -114,31 +114,31 @@ const Learn: React.FC = () => {
       <div className="pt-20 pb-8 px-3 md:px-4">
         <div className="container mx-auto max-w-7xl">
           {/* Header */}
-          <div className="mb-6 md:mb-8 text-center space-y-3 md:space-y-4">
-            <div className="inline-flex items-center space-x-2 md:space-x-3 px-3 md:px-4 py-1.5 md:py-2 bg-gradient-primary rounded-full">
-              <BookOpen className="w-5 h-5 md:w-6 md:h-6 text-white" />
-              <h1 className="text-lg md:text-2xl font-bold text-white">Interactive Learning Hub</h1>
+          <div className="mb-8 md:mb-12 text-center space-y-4 md:space-y-6">
+            <div className="inline-flex items-center space-x-3 px-6 py-2.5 bg-gradient-to-r from-primary/10 via-primary/20 to-primary/10 border border-primary/20 rounded-2xl backdrop-blur-sm">
+              <BookOpen className="w-6 h-6 text-primary animate-pulse" />
+              <h1 className="text-xl md:text-3xl font-black tracking-tight text-gradient">Knowledge Synthesis Hub</h1>
             </div>
-            <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto px-4">
-              Explore comprehensive guides on Software and Hardware fundamentals. Navigate through chapters like turning pages in a book!
+            <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto px-6 leading-relaxed">
+              Master the dual nature of modern engineering. Navigate through curated modules on Software and Hardware fundamentals.
             </p>
           </div>
 
           {/* Tabs */}
-          <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-4 md:space-y-6">
+          <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-6 md:space-y-8">
             <div className="flex justify-center">
-              <TabsList className="bg-card border border-border w-full max-w-md md:w-auto">
+              <TabsList className="bg-muted/50 p-1.5 border border-border/50 w-full max-w-md md:w-auto rounded-2xl h-14">
                 <TabsTrigger 
                   value="software" 
-                  className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white flex-1 md:flex-none text-xs md:text-sm"
+                  className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-glow flex-1 md:flex-none text-xs md:text-sm font-bold h-full px-8 transition-all duration-300"
                 >
-                  💻 Software
+                  <span className="mr-2">💻</span> Logic & Software
                 </TabsTrigger>
                 <TabsTrigger 
                   value="hardware" 
-                  className="data-[state=active]:bg-gradient-primary data-[state=active]:text-white flex-1 md:flex-none text-xs md:text-sm"
+                  className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-glow flex-1 md:flex-none text-xs md:text-sm font-bold h-full px-8 transition-all duration-300"
                 >
-                  🔧 Hardware
+                  <span className="mr-2">🔧</span> Physical Hardware
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -201,33 +201,36 @@ const Learn: React.FC = () => {
                   </Card>
                 </div>
 
-                {/* Book Content Area */}
-                <div className="relative">
+                <div className="relative group">
                   <PageFlip direction={pageFlipDirection}>
                     <Card 
-                      className="p-4 md:p-6 lg:p-8 bg-card/80 backdrop-blur border-border shadow-2xl min-h-[500px] md:min-h-[600px]"
+                      className="p-6 md:p-8 lg:p-12 bg-card/40 backdrop-blur-md border-primary/10 shadow-glow min-h-[550px] md:min-h-[650px] rounded-3xl overflow-hidden relative"
                       data-testid="book-content"
                     >
+                      {/* Decorative elements */}
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none" />
+                      
                       {chapter ? (
-                        <div className="space-y-4 md:space-y-6">
+                        <div className="space-y-6 md:space-y-8 h-full flex flex-col relative z-10">
                           {/* Chapter Header */}
-                          <div className="border-b border-border pb-4 md:pb-6">
-                            <div className="text-xs md:text-sm font-medium text-primary mb-1.5 md:mb-2">
-                              Chapter {chapter.number}
+                          <div className="border-b border-primary/10 pb-6 md:pb-8">
+                            <div className="flex items-center gap-2 text-xs md:text-sm font-black text-primary uppercase tracking-[0.2em] mb-3">
+                              <span className="w-8 h-px bg-primary/30" />
+                              Module {chapter.number}
                             </div>
-                            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4 text-gradient">
+                            <h2 className="text-2xl md:text-4xl lg:text-5xl font-black mb-4 md:mb-6 text-gradient leading-tight">
                               {chapter.title}
                             </h2>
-                            <div className="flex items-center gap-2 md:gap-4 text-xs md:text-sm text-muted-foreground flex-wrap">
-                              <span>📖 {filteredContent.length} Chapters</span>
-                              <span className="hidden sm:inline">•</span>
-                              <span>📄 Page {currentChapter + 1} of {filteredContent.length}</span>
+                            <div className="flex items-center gap-4 md:gap-6 text-xs md:text-sm text-muted-foreground/60 font-medium">
+                              <span className="flex items-center gap-1.5"><BookOpen className="w-4 h-4" /> {filteredContent.length} Modules</span>
+                              <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
+                              <span className="flex items-center gap-1.5">📄 Page {currentChapter + 1} / {filteredContent.length}</span>
                             </div>
                           </div>
 
                           {/* Chapter Content */}
-                          <ScrollArea className="h-[400px] md:h-[450px] lg:h-[500px] pr-2 md:pr-4">
-                            <div className="space-y-4 md:space-y-6">
+                          <ScrollArea className="flex-1 pr-4 md:pr-6">
+                            <div className="space-y-6 md:space-y-10 py-4">
                               {chapter.content.map((block, index) => (
                                 <ChapterCard key={index} block={block} />
                               ))}
@@ -235,32 +238,31 @@ const Learn: React.FC = () => {
                           </ScrollArea>
 
                           {/* Navigation Footer */}
-                          <div className="flex items-center justify-between pt-4 md:pt-6 border-t border-border gap-2">
+                          <div className="flex items-center justify-between pt-6 md:pt-8 border-t border-primary/10 mt-auto">
                             <Button
                               onClick={handlePrevChapter}
                               disabled={currentChapter === 0}
-                              variant="outline"
-                              className="gap-1 md:gap-2 text-xs md:text-sm h-8 md:h-10 px-2 md:px-4"
+                              variant="ghost"
+                              className="group/btn gap-2 h-12 px-6 rounded-xl hover:bg-primary/5 text-muted-foreground hover:text-primary transition-all"
                               data-testid="prev-chapter-btn"
                             >
-                              <ChevronLeft className="w-3 h-3 md:w-4 md:h-4" />
-                              <span className="hidden sm:inline">Previous</span>
-                              <span className="sm:hidden">Prev</span>
+                              <ChevronLeft className="w-5 h-5 group-hover/btn:-translate-x-1 transition-transform" />
+                              <span className="font-bold">Previous Module</span>
                             </Button>
                             
-                            <div className="flex gap-1 md:gap-2 overflow-x-auto max-w-[120px] md:max-w-none">
+                            <div className="hidden md:flex gap-3 px-6 py-2 bg-muted/30 rounded-full border border-border/50">
                               {filteredContent.map((_, index) => (
                                 <button
                                   key={index}
                                   onClick={() => handleChapterSelect(index)}
                                   className={`
-                                    w-1.5 h-1.5 md:w-2 md:h-2 rounded-full transition-all duration-200 flex-shrink-0
+                                    w-2.5 h-2.5 rounded-full transition-all duration-500 flex-shrink-0
                                     ${currentChapter === index 
-                                      ? 'bg-primary w-6 md:w-8' 
-                                      : 'bg-muted hover:bg-muted-foreground'
+                                      ? 'bg-primary w-10 shadow-glow' 
+                                      : 'bg-muted-foreground/20 hover:bg-muted-foreground/40'
                                     }
                                   `}
-                                  aria-label={`Go to chapter ${index + 1}`}
+                                  aria-label={`Go to module ${index + 1}`}
                                 />
                               ))}
                             </div>
@@ -268,13 +270,12 @@ const Learn: React.FC = () => {
                             <Button
                               onClick={handleNextChapter}
                               disabled={currentChapter === filteredContent.length - 1}
-                              variant="outline"
-                              className="gap-1 md:gap-2 text-xs md:text-sm h-8 md:h-10 px-2 md:px-4"
+                              variant="ghost"
+                              className="group/btn gap-2 h-12 px-6 rounded-xl hover:bg-primary/5 text-muted-foreground hover:text-primary transition-all"
                               data-testid="next-chapter-btn"
                             >
-                              <span className="hidden sm:inline">Next</span>
-                              <span className="sm:hidden">Next</span>
-                              <ChevronRight className="w-3 h-3 md:w-4 md:h-4" />
+                              <span className="font-bold">Next Module</span>
+                              <ChevronRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />
                             </Button>
                           </div>
                         </div>
