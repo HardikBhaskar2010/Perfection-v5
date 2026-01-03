@@ -10,14 +10,14 @@ export const CommandCenterTitle: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full py-12 select-none">
+    <div className="flex flex-col items-center justify-center w-full py-12 select-none relative h-40">
       <div 
-        className="flex items-center justify-center cursor-pointer group" 
+        className="flex items-center justify-center cursor-pointer group relative z-10" 
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className={cn(
-          "text-5xl md:text-8xl font-black tracking-tighter transition-all duration-1000 cubic-bezier(0.23, 1, 0.32, 1) uppercase",
-          isOpen ? "translate-x-0 opacity-100 scale-100" : "translate-x-[40%] opacity-0 scale-90"
+          "text-5xl md:text-8xl font-black tracking-tighter transition-all duration-1000 cubic-bezier(0.23, 1, 0.32, 1) uppercase text-primary",
+          isOpen ? "translate-x-0 opacity-100 scale-100" : "translate-x-[40%] scale-90"
         )}>
           COMMAND
         </span>
@@ -31,20 +31,29 @@ export const CommandCenterTitle: React.FC = () => {
               Welcome to Abyss
             </span>
           </div>
-          {/* Internal scanning effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent w-1/2 h-full -translate-x-full animate-[shimmer_3s_infinite]" />
           <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/60 to-transparent shadow-[0_0_20px_rgba(139,92,246,0.8)]" />
         </div>
 
         <span className={cn(
-          "text-5xl md:text-8xl font-black tracking-tighter transition-all duration-1000 cubic-bezier(0.23, 1, 0.32, 1) uppercase",
-          isOpen ? "translate-x-0 opacity-100 scale-100" : "-translate-x-[40%] opacity-0 scale-90"
+          "text-5xl md:text-8xl font-black tracking-tighter transition-all duration-1000 cubic-bezier(0.23, 1, 0.32, 1) uppercase text-primary",
+          isOpen ? "translate-x-0 opacity-100 scale-100" : "-translate-x-[40%] scale-90"
         )}>
           CENTER
         </span>
       </div>
+
+      {/* Simplified Static Title that appears when closed */}
+      {!isOpen && (
+        <div 
+          className="absolute inset-0 flex items-center justify-center cursor-pointer z-0 pointer-events-none"
+        >
+          <h1 className="text-5xl md:text-8xl font-black tracking-tighter text-primary/20 uppercase transition-opacity duration-500">
+            COMMAND CENTER
+          </h1>
+        </div>
+      )}
       
-      {/* Decorative Abyss line */}
       <div className={cn(
         "mt-8 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent transition-all duration-[1500ms] delay-700",
         isOpen ? "w-full opacity-100" : "w-0 opacity-0"
