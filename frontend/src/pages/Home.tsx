@@ -163,195 +163,188 @@ const Home: React.FC = () => {
   if (showDashboard) {
     return (
       <Layout>
-        <PageHeader
-          title="My Dashboard"
-          description="View and manage your STEM projects"
-        >
-          <div className="flex justify-center">
-            <div className="p-4 bg-gradient-primary rounded-2xl shadow-glow animate-glow-pulse">
-              <TrendingUp className="w-12 h-12 text-white" />
-            </div>
-          </div>
-        </PageHeader>
-
-        <div className="container mx-auto px-4 py-8">
-          {/* Header with logout */}
-          <div className="max-w-6xl mx-auto mb-8 flex justify-between items-center">
-            <div>
-              <p className="text-muted-foreground">Welcome, {user?.email}</p>
-            </div>
-            <Button
-              variant="outline"
-              onClick={handleLogout}
-              className="gap-2"
-            >
-              <LogOut className="w-4 h-4" />
-              Sign Out
-            </Button>
-          </div>
-
-          {/* Stats Cards */}
-          <div className="grid md:grid-cols-4 gap-4 max-w-6xl mx-auto mb-8">
-            <Card className="glass-effect border-border/50">
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <p className="text-3xl font-bold text-gradient">{stats.total}</p>
-                  <p className="text-sm text-muted-foreground">Total Projects</p>
+        <div className="bg-gradient-to-b from-primary/5 via-background to-background pt-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto py-12">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+                <div className="space-y-2">
+                  <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gradient">
+                    Workspace
+                  </h1>
+                  <p className="text-muted-foreground text-lg max-w-lg">
+                    Welcome back! Here's an overview of your STEM innovation projects.
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
-            <Card className="glass-effect border-border/50">
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <p className="text-3xl font-bold text-green-500">{stats.completed}</p>
-                  <p className="text-sm text-muted-foreground">Completed</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="glass-effect border-border/50">
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <p className="text-3xl font-bold text-blue-500">{stats.inProgress}</p>
-                  <p className="text-sm text-muted-foreground">In Progress</p>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="glass-effect border-border/50">
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <p className="text-3xl font-bold text-orange-500">{stats.planning}</p>
-                  <p className="text-sm text-muted-foreground">Planning</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Projects Section */}
-          <div className="max-w-6xl mx-auto">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Your Projects</h2>
-              <Button
-                className="bg-gradient-primary text-white"
-                onClick={() => navigate('/generator')}
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Generate New Project
-              </Button>
-            </div>
-
-            {/* Tabs */}
-            <div className="mb-6">
-              <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="glass-effect">
-                  <TabsTrigger value="all">All Projects</TabsTrigger>
-                  <TabsTrigger value="planning">Planning</TabsTrigger>
-                  <TabsTrigger value="in-progress">In Progress</TabsTrigger>
-                  <TabsTrigger value="completed">Completed</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
-
-            {/* Projects Grid */}
-            {isLoadingProjects ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="animate-spin">
-                  <Zap className="w-8 h-8 text-primary" />
-                </div>
-              </div>
-            ) : filteredProjects.length > 0 ? (
-              <div className="grid md:grid-cols-2 gap-6">
-                {filteredProjects.map((project, index) => (
-                  <Card
-                    key={project.id}
-                    className="group glass-effect border-border/50"
-                    enableAnimation={true}
-                    enableHover={true}
-                    animationDelay={index * 50}
-                  >
-                    <CardHeader>
-                      <div className="flex justify-between items-start mb-2">
-                        <div className="flex-1">
-                          <CardTitle className="text-lg">{project.title}</CardTitle>
-                          <CardDescription className="mt-1 line-clamp-2">
-                            {project.description}
-                          </CardDescription>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      {/* Status and Difficulty */}
-                      <div className="flex gap-2 flex-wrap">
-                        <Badge className={getStatusColor(project.status)}>
-                          {project.status}
-                        </Badge>
-                        <Badge variant="outline">{project.difficulty}</Badge>
-                      </div>
-
-                      {/* Progress Bar */}
-                      <div>
-                        <div className="flex justify-between mb-1">
-                          <span className="text-sm text-muted-foreground">Progress</span>
-                          <span className="text-sm font-medium">{project.progress}%</span>
-                        </div>
-                        <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-primary transition-all duration-500"
-                            style={{ width: `${project.progress}%` }}
-                          />
-                        </div>
-                      </div>
-
-                      {/* Info */}
-                      <div className="grid grid-cols-2 gap-2 text-sm">
-                        <div>
-                          <p className="text-muted-foreground">Estimated Time</p>
-                          <p className="font-medium">{project.estimated_time}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground">Budget</p>
-                          <p className="font-medium">{project.estimated_cost}</p>
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="flex-1"
-                          onClick={() => navigate(`/project/${project.id}`)}
-                        >
-                          <Eye className="w-4 h-4 mr-1" />
-                          View
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleDeleteProject(project.id)}
-                          className="text-destructive hover:bg-destructive/10"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <Card className="glass-effect border-border/50">
-                <CardContent className="py-12 text-center">
-                  <BookOpen className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground mb-4">No projects yet</p>
+                <div className="flex items-center gap-4">
                   <Button
-                    className="bg-gradient-primary text-white"
+                    size="lg"
+                    className="bg-gradient-primary text-white shadow-glow hover:shadow-glow-lg transition-all duration-300 rounded-full px-8 h-14"
                     onClick={() => navigate('/generator')}
                   >
-                    <Zap className="w-4 h-4 mr-2" />
-                    Generate Your First Project
+                    <Plus className="w-5 h-5 mr-2" />
+                    <span className="font-semibold">New Project</span>
                   </Button>
-                </CardContent>
-              </Card>
-            )}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleLogout}
+                    className="rounded-full h-12 w-12 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                    title="Sign Out"
+                  >
+                    <LogOut className="w-5 h-5" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Stats Cards */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                <Card className="glass-effect border-primary/10 shadow-sm hover:shadow-md transition-all duration-300">
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <p className="text-3xl font-bold text-primary">{stats.total}</p>
+                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mt-1">Total</p>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="glass-effect border-emerald-500/10 shadow-sm hover:shadow-md transition-all duration-300">
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <p className="text-3xl font-bold text-emerald-500">{stats.completed}</p>
+                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mt-1">Completed</p>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="glass-effect border-sky-500/10 shadow-sm hover:shadow-md transition-all duration-300">
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <p className="text-3xl font-bold text-sky-500">{stats.inProgress}</p>
+                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mt-1">Active</p>
+                    </div>
+                  </CardContent>
+                </Card>
+                <Card className="glass-effect border-amber-500/10 shadow-sm hover:shadow-md transition-all duration-300">
+                  <CardContent className="pt-6">
+                    <div className="text-center">
+                      <p className="text-3xl font-bold text-amber-500">{stats.planning}</p>
+                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider mt-1">Planning</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Projects List */}
+              <div className="max-w-4xl mx-auto">
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-2xl font-bold flex items-center gap-2">
+                    <BookOpen className="w-6 h-6 text-primary" />
+                    Recent Projects
+                  </h2>
+                  <Tabs value={activeTab} onValueChange={setActiveTab} className="bg-muted/50 p-1 rounded-xl">
+                    <TabsList className="bg-transparent border-none">
+                      <TabsTrigger value="all" className="rounded-lg">All</TabsTrigger>
+                      <TabsTrigger value="planning" className="rounded-lg">Planning</TabsTrigger>
+                      <TabsTrigger value="in-progress" className="rounded-lg">Active</TabsTrigger>
+                      <TabsTrigger value="completed" className="rounded-lg">Done</TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+                </div>
+
+                {isLoadingProjects ? (
+                  <div className="flex flex-col items-center justify-center py-20 gap-4">
+                    <div className="animate-spin-slow">
+                      <Zap className="w-12 h-12 text-primary" />
+                    </div>
+                    <p className="text-muted-foreground animate-pulse">Loading your projects...</p>
+                  </div>
+                ) : filteredProjects.length > 0 ? (
+                  <div className="space-y-4">
+                    {filteredProjects.map((project, index) => (
+                      <Card
+                        key={project.id}
+                        className="group relative overflow-hidden glass-effect border-primary/5 hover:border-primary/20 transition-all duration-300 shadow-sm hover:shadow-md"
+                        enableAnimation={true}
+                        enableHover={true}
+                        animationDelay={index * 50}
+                      >
+                        <div className="p-6">
+                          <div className="flex justify-between items-start gap-4">
+                            <div className="flex-1 space-y-3">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <Badge variant="outline" className={`${getStatusColor(project.status)} border px-2 py-0 font-medium capitalize`}>
+                                  {project.status.replace('-', ' ')}
+                                </Badge>
+                                <Badge variant="secondary" className="bg-secondary/50 text-secondary-foreground text-xs uppercase tracking-wider">
+                                  {project.difficulty}
+                                </Badge>
+                              </div>
+                              
+                              <div>
+                                <h3 className="text-xl font-bold group-hover:text-primary transition-colors mb-1">{project.title}</h3>
+                                <p className="text-muted-foreground text-sm line-clamp-2 leading-relaxed">
+                                  {project.description}
+                                </p>
+                              </div>
+
+                              <div className="pt-2">
+                                <div className="flex justify-between items-center mb-1.5">
+                                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-tight">Progress</span>
+                                  <span className="text-xs font-bold">{project.progress}%</span>
+                                </div>
+                                <div className="w-full bg-muted/30 rounded-full h-1.5 overflow-hidden">
+                                  <div
+                                    className="h-full bg-gradient-primary transition-all duration-700 ease-out"
+                                    style={{ width: `${project.progress}%` }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex flex-col gap-2">
+                              <Button
+                                size="icon"
+                                variant="secondary"
+                                className="rounded-xl bg-primary/5 hover:bg-primary text-primary hover:text-white transition-all duration-300"
+                                onClick={() => navigate(`/project/${project.id}`)}
+                              >
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => handleDeleteProject(project.id)}
+                                className="rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-300"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <Card className="glass-effect border-dashed border-primary/20 py-16">
+                    <CardContent className="text-center space-y-4">
+                      <div className="w-16 h-16 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <Plus className="w-8 h-8 text-primary/40" />
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="text-xl font-semibold">No projects yet</h3>
+                        <p className="text-muted-foreground">Start by generating your first STEM project idea.</p>
+                      </div>
+                      <Button
+                        size="lg"
+                        className="bg-gradient-primary text-white rounded-full px-8 mt-4"
+                        onClick={() => navigate('/generator')}
+                      >
+                        <Zap className="w-4 h-4 mr-2" />
+                        Get Started
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </Layout>
