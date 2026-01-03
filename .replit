@@ -44,3 +44,4 @@ publicDir = "frontend/dist"
 [userenv.shared]
 VITE_EMAILJS_SERVICE_ID = "service_gnbgokw"
 VITE_EMAILJS_PUBLIC_KEY = "1w-UAXGYrlhwiGirV"
+VITE_EMAILJS_TEMPLATE_ID = "template_hlzi52q"
